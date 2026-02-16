@@ -1,0 +1,52 @@
+export default {
+  async fetch(request) {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poortal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: clamp(2rem, 12vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+        p {
+            font-size: clamp(0.875rem, 5vw, 1.25rem);
+            margin-top: 10px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Poortal</h1>
+        <p>Coming soon to your city</p>
+    </div>
+</body>
+</html>`;
+    
+    return new Response(html, {
+        headers: { 'content-type': 'text/html; charset=UTF-8' }
+    });
+  }
+}
