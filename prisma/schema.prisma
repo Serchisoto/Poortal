@@ -1,0 +1,666 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model user {
+  id            String     @id
+  name          String
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  role          String     @default("tourist")
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime   @default(now()) @db.Timestamptz(6)
+  accounts      account[]
+  profiles      profiles[]
+  sessions      session[]
+}
+
+model session {
+  id        String   @id
+  expiresAt DateTime @db.Timestamptz(6)
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamptz(6)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(6)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime  @default(now()) @db.Timestamptz(6)
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime  @db.Timestamptz(6)
+  createdAt  DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model booking_items {
+  id                      String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_id              String                   @db.Uuid
+  experience_id           String                   @db.Uuid
+  availability_id         String?                  @db.Uuid
+  provider_id             String                   @db.Uuid
+  status                  booking_item_status      @default(pending)
+  quantity                Int                      @default(1)
+  unit_price              Decimal                  @db.Decimal(10, 2)
+  subtotal                Decimal                  @db.Decimal(10, 2)
+  service_date            DateTime                 @db.Date
+  service_time            DateTime?                @db.Time(6)
+  provider_message        String?
+  responded_at            DateTime?                @db.Timestamptz(6)
+  created_at              DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime                 @default(now()) @db.Timestamptz(6)
+  experience_availability experience_availability? @relation(fields: [availability_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  bookings                bookings                 @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  experiences             experiences              @relation(fields: [experience_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  provider_profiles       provider_profiles        @relation(fields: [provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cancellations           cancellations[]
+  payments                payments[]
+  reviews                 reviews?
+  tickets                 tickets?
+
+  @@index([booking_id], map: "idx_booking_items_booking")
+  @@index([experience_id], map: "idx_booking_items_experience")
+  @@index([provider_id], map: "idx_booking_items_provider")
+}
+
+model bookings {
+  id                         String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_number             String             @unique
+  user_id                    String             @db.Uuid
+  guest_email                String?
+  guest_token                String?            @unique
+  status                     booking_status     @default(pending_payment)
+  total_amount               Decimal            @db.Decimal(10, 2)
+  platform_fee               Decimal            @default(0) @db.Decimal(10, 2)
+  currency                   String             @default("MXN")
+  stripe_payment_intent_id   String?
+  stripe_checkout_session_id String?
+  notes                      String?
+  created_at                 DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime           @default(now()) @db.Timestamptz(6)
+  booking_items              booking_items[]
+  profiles                   profiles           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cancellations              cancellations[]
+  payments                   payments[]
+  platform_credits           platform_credits[]
+
+  @@index([booking_number], map: "idx_bookings_number")
+  @@index([status], map: "idx_bookings_status")
+  @@index([user_id], map: "idx_bookings_user")
+}
+
+model cancellations {
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_id           String              @db.Uuid
+  booking_item_id      String?             @db.Uuid
+  cancelled_by         String?             @db.Uuid
+  cancelled_by_type    String              @default("system")
+  reason               String?
+  cancellation_policy  cancellation_policy
+  hours_before_service Decimal?            @db.Decimal(10, 2)
+  original_amount      Decimal             @db.Decimal(10, 2)
+  refund_percentage    Int
+  refund_amount        Decimal             @db.Decimal(10, 2)
+  stripe_refund_id     String?
+  created_at           DateTime            @default(now()) @db.Timestamptz(6)
+  bookings             bookings            @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  booking_items        booking_items?      @relation(fields: [booking_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profiles             profiles?           @relation(fields: [cancelled_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([booking_id], map: "idx_cancellations_booking")
+}
+
+model categories {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                   String
+  slug                   String                   @unique
+  description            String?
+  icon                   String?
+  sort_order             Int                      @default(0)
+  is_active              Boolean                  @default(true)
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  destination_categories destination_categories[]
+  experiences            experiences[]
+  provider_profiles      provider_profiles[]
+  subcategories          subcategories[]
+}
+
+model collection_experiences {
+  id                      String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  collection_id           String                  @db.Uuid
+  experience_id           String                  @db.Uuid
+  sort_order              Int                     @default(0)
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  destination_collections destination_collections @relation(fields: [collection_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  experiences             experiences             @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([collection_id, experience_id])
+  @@index([collection_id, sort_order], map: "idx_collection_experiences_collection")
+  @@index([experience_id], map: "idx_collection_experiences_experience")
+}
+
+model destination_categories {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  destination_id String       @db.Uuid
+  category_id    String       @db.Uuid
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  categories     categories   @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  destinations   destinations @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([destination_id, category_id])
+  @@index([category_id], map: "idx_destination_categories_cat")
+  @@index([destination_id], map: "idx_destination_categories_dest")
+}
+
+model destination_collections {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  destination_id         String                   @db.Uuid
+  name                   String
+  description            String?
+  icon                   String?
+  sort_order             Int                      @default(0)
+  is_active              Boolean                  @default(true)
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  collection_experiences collection_experiences[]
+  destinations           destinations             @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([destination_id, sort_order], map: "idx_dest_collections_destination")
+}
+
+model destination_info_categories {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  destination_id         String                   @db.Uuid
+  slug                   String
+  title                  String
+  icon                   String?
+  color                  String?
+  subtitle               String?
+  sort_order             Int                      @default(0)
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  destinations           destinations             @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  destination_info_items destination_info_items[]
+
+  @@unique([destination_id, slug])
+}
+
+model destination_info_items {
+  id                          String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category_id                 String                      @db.Uuid
+  title                       String
+  description                 Json                        @default("[]")
+  author                      String?
+  date                        String?
+  images_count                Int?
+  actions                     Json                        @default("{}")
+  sort_order                  Int                         @default(0)
+  created_at                  DateTime                    @default(now()) @db.Timestamptz(6)
+  destination_info_categories destination_info_categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model destination_recommendations {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  destination_id String       @db.Uuid
+  experience_id  String       @db.Uuid
+  sort_order     Int          @default(0)
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  destinations   destinations @relation(fields: [destination_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  experiences    experiences  @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([destination_id, experience_id])
+  @@index([destination_id, sort_order], map: "idx_dest_recommendations_dest")
+}
+
+model destinations {
+  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                        String
+  slug                        String                        @unique
+  description                 String?
+  country                     String
+  state                       String?
+  city                        String?
+  latitude                    Float?
+  longitude                   Float?
+  cover_image_url             String?
+  is_active                   Boolean                       @default(true)
+  created_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  updated_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  destination_categories      destination_categories[]
+  destination_collections     destination_collections[]
+  destination_info_categories destination_info_categories[]
+  destination_recommendations destination_recommendations[]
+  experiences                 experiences[]
+  provider_profiles           provider_profiles[]
+
+  @@index([is_active], map: "idx_destinations_active", where: raw("(is_active = true)"))
+  @@index([slug], map: "idx_destinations_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model experience_availability {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  experience_id  String          @db.Uuid
+  date           DateTime        @db.Date
+  start_time     DateTime        @db.Time(6)
+  end_time       DateTime?       @db.Time(6)
+  total_spots    Int
+  booked_spots   Int             @default(0)
+  price_override Decimal?        @db.Decimal(10, 2)
+  is_blocked     Boolean         @default(false)
+  created_at     DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime        @default(now()) @db.Timestamptz(6)
+  booking_items  booking_items[]
+  experiences    experiences     @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([experience_id, date], map: "idx_experience_availability_lookup", where: raw("(is_blocked = false)"))
+}
+
+model experience_images {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  experience_id String      @db.Uuid
+  url           String
+  alt_text      String?
+  sort_order    Int         @default(0)
+  is_cover      Boolean     @default(false)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  experiences   experiences @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([experience_id], map: "idx_experience_images_experience")
+}
+
+model experiences {
+  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider_id                 String                        @db.Uuid
+  destination_id              String                        @db.Uuid
+  category_id                 String                        @db.Uuid
+  subcategory_id              String?                       @db.Uuid
+  title                       String
+  slug                        String
+  description                 String
+  short_description           String?
+  highlights                  String[]
+  includes                    String[]
+  excludes                    String[]
+  requirements                String[]
+  meeting_point               String?
+  meeting_point_lat           Float?
+  meeting_point_lng           Float?
+  duration_minutes            Int?
+  max_capacity                Int                           @default(10)
+  min_capacity                Int                           @default(1)
+  pricing_type                pricing_type                  @default(per_person)
+  price_amount                Decimal                       @db.Decimal(10, 2)
+  price_currency              String                        @default("MXN")
+  cancellation_policy         cancellation_policy           @default(flexible)
+  status                      experience_status             @default(draft)
+  is_featured                 Boolean                       @default(false)
+  average_rating              Decimal                       @default(0) @db.Decimal(3, 2)
+  review_count                Int                           @default(0)
+  search_vector               Unsupported("tsvector")?
+  rejection_reason            String?
+  published_at                DateTime?                     @db.Timestamptz(6)
+  created_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  updated_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  booking_items               booking_items[]
+  collection_experiences      collection_experiences[]
+  destination_recommendations destination_recommendations[]
+  experience_availability     experience_availability[]
+  experience_images           experience_images[]
+  categories                  categories                    @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  destinations                destinations                  @relation(fields: [destination_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  provider_profiles           provider_profiles             @relation(fields: [provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subcategories               subcategories?                @relation(fields: [subcategory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviews                     reviews[]
+  tickets                     tickets[]
+
+  @@unique([provider_id, slug])
+  @@index([category_id], map: "idx_experiences_category")
+  @@index([destination_id], map: "idx_experiences_destination")
+  @@index([category_id, is_featured], map: "idx_experiences_featured", where: raw("(is_featured = true)"))
+  @@index([provider_id], map: "idx_experiences_provider")
+  @@index([search_vector], map: "idx_experiences_search", type: Gin)
+  @@index([status], map: "idx_experiences_status", where: raw("(status = 'active'::experience_status)"))
+}
+
+model notifications {
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String            @db.Uuid
+  type       notification_type @default(general)
+  title      String
+  body       String?
+  link       String?
+  is_read    Boolean           @default(false)
+  metadata   Json?             @default("{}")
+  created_at DateTime          @default(now()) @db.Timestamptz(6)
+  profiles   profiles          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, is_read], map: "idx_notifications_unread", where: raw("(is_read = false)"))
+  @@index([user_id], map: "idx_notifications_user")
+}
+
+model payments {
+  id                       String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_id               String         @db.Uuid
+  booking_item_id          String?        @db.Uuid
+  type                     payment_type
+  status                   payment_status @default(pending)
+  amount                   Decimal        @db.Decimal(10, 2)
+  currency                 String         @default("MXN")
+  stripe_payment_intent_id String?
+  stripe_charge_id         String?
+  stripe_transfer_id       String?
+  stripe_refund_id         String?
+  metadata                 Json?          @default("{}")
+  created_at               DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime       @default(now()) @db.Timestamptz(6)
+  bookings                 bookings       @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  booking_items            booking_items? @relation(fields: [booking_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([booking_id], map: "idx_payments_booking")
+  @@index([status], map: "idx_payments_status")
+}
+
+model platform_credits {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String        @db.Uuid
+  amount      Decimal       @db.Decimal(10, 2)
+  currency    String        @default("MXN")
+  reason      credit_reason
+  description String?
+  booking_id  String?       @db.Uuid
+  expires_at  DateTime?     @db.Timestamptz(6)
+  used_at     DateTime?     @db.Timestamptz(6)
+  created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  bookings    bookings?     @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profiles    profiles      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_platform_credits_user")
+}
+
+model profiles {
+  id                                                        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                                                     String               @unique
+  full_name                                                 String?
+  phone                                                     String?
+  role                                                      user_role            @default(tourist)
+  avatar_url                                                String?
+  nationality                                               String?
+  preferred_language                                        String?              @default("es")
+  created_at                                                DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at                                                DateTime             @default(now()) @db.Timestamptz(6)
+  user_id                                                   String?
+  bookings                                                  bookings[]
+  cancellations                                             cancellations[]
+  notifications                                             notifications[]
+  platform_credits                                          platform_credits[]
+  user                                                      user?                @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  provider_documents                                        provider_documents[]
+  provider_profiles_provider_profiles_approved_byToprofiles provider_profiles[]  @relation("provider_profiles_approved_byToprofiles")
+  provider_profiles_provider_profiles_user_idToprofiles     provider_profiles?   @relation("provider_profiles_user_idToprofiles")
+  reviews                                                   reviews[]
+  tickets                                                   tickets[]
+
+  @@index([role], map: "idx_profiles_role")
+}
+
+model provider_documents {
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider_id       String            @db.Uuid
+  type              document_type
+  name              String
+  file_url          String
+  status            document_status   @default(pending)
+  rejection_reason  String?
+  reviewed_by       String?           @db.Uuid
+  reviewed_at       DateTime?         @db.Timestamptz(6)
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  provider_profiles provider_profiles @relation(fields: [provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles          profiles?         @relation(fields: [reviewed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([provider_id], map: "idx_provider_documents_provider")
+}
+
+model provider_profiles {
+  id                                               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                                          String               @unique @db.Uuid
+  destination_id                                   String?              @db.Uuid
+  business_name                                    String
+  representative_name                              String
+  phone                                            String
+  location                                         String
+  category_id                                      String?              @db.Uuid
+  short_description                                String
+  status                                           provider_status      @default(pending_review)
+  legal_name                                       String?
+  tax_id                                           String?
+  full_address                                     String?
+  customer_phone                                   String?
+  website                                          String?
+  operating_hours                                  Json?
+  stripe_account_id                                String?
+  stripe_onboarding_complete                       Boolean              @default(false)
+  rejection_reason                                 String?
+  approved_at                                      DateTime?            @db.Timestamptz(6)
+  approved_by                                      String?              @db.Uuid
+  created_at                                       DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at                                       DateTime             @default(now()) @db.Timestamptz(6)
+  booking_items                                    booking_items[]
+  experiences                                      experiences[]
+  provider_documents                               provider_documents[]
+  profiles_provider_profiles_approved_byToprofiles profiles?            @relation("provider_profiles_approved_byToprofiles", fields: [approved_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categories                                       categories?          @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  destinations                                     destinations?        @relation(fields: [destination_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profiles_provider_profiles_user_idToprofiles     profiles             @relation("provider_profiles_user_idToprofiles", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tickets                                          tickets[]
+
+  @@index([destination_id], map: "idx_provider_profiles_destination")
+  @@index([status], map: "idx_provider_profiles_status")
+  @@index([user_id], map: "idx_provider_profiles_user")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id                    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  experience_id         String        @db.Uuid
+  booking_item_id       String        @unique @db.Uuid
+  user_id               String        @db.Uuid
+  rating                Int
+  comment               String?
+  provider_response     String?
+  provider_responded_at DateTime?     @db.Timestamptz(6)
+  is_flagged            Boolean       @default(false)
+  is_visible            Boolean       @default(true)
+  created_at            DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime      @default(now()) @db.Timestamptz(6)
+  booking_items         booking_items @relation(fields: [booking_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  experiences           experiences   @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles              profiles      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([experience_id], map: "idx_reviews_experience")
+  @@index([experience_id, rating], map: "idx_reviews_rating")
+  @@index([user_id], map: "idx_reviews_user")
+}
+
+model subcategories {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category_id String        @db.Uuid
+  name        String
+  slug        String        @unique
+  description String?
+  sort_order  Int           @default(0)
+  is_active   Boolean       @default(true)
+  created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime      @default(now()) @db.Timestamptz(6)
+  experiences experiences[]
+  categories  categories    @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([category_id], map: "idx_subcategories_category")
+}
+
+model tickets {
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_item_id   String            @unique @db.Uuid
+  user_id           String            @db.Uuid
+  experience_id     String            @db.Uuid
+  provider_id       String            @db.Uuid
+  qr_code           String            @unique
+  status            ticket_status     @default(active)
+  service_date      DateTime          @db.Date
+  service_time      DateTime?         @db.Time(6)
+  quantity          Int               @default(1)
+  provider_message  String?
+  scanned_at        DateTime?         @db.Timestamptz(6)
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  booking_items     booking_items     @relation(fields: [booking_item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  experiences       experiences       @relation(fields: [experience_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  provider_profiles provider_profiles @relation(fields: [provider_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profiles          profiles          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([provider_id], map: "idx_tickets_provider")
+  @@index([qr_code], map: "idx_tickets_qr")
+  @@index([status], map: "idx_tickets_status", where: raw("(status = 'active'::ticket_status)"))
+  @@index([user_id], map: "idx_tickets_user")
+}
+
+enum booking_item_status {
+  pending
+  confirmed
+  rejected
+  cancelled
+  completed
+}
+
+enum booking_status {
+  pending_payment
+  paid
+  confirmed
+  in_progress
+  completed
+  cancelled
+  refunded
+  disputed
+}
+
+enum cancellation_policy {
+  flexible
+  moderate
+  strict
+}
+
+enum credit_reason {
+  provider_cancellation
+  referral
+  promotion
+  dispute_resolution
+  manual
+}
+
+enum document_status {
+  pending
+  approved
+  rejected
+}
+
+enum document_type {
+  government_id
+  proof_of_address
+  business_license
+  insurance
+  other
+}
+
+enum experience_status {
+  draft
+  pending_review
+  active
+  paused
+  rejected
+  archived
+}
+
+enum notification_type {
+  booking_created
+  booking_confirmed
+  booking_rejected
+  booking_cancelled
+  payment_received
+  payment_transferred
+  review_received
+  provider_approved
+  provider_rejected
+  experience_approved
+  experience_rejected
+  general
+}
+
+enum payment_status {
+  pending
+  succeeded
+  failed
+  refunded
+  partially_refunded
+}
+
+enum payment_type {
+  charge
+  transfer
+  refund
+  platform_fee
+}
+
+enum pricing_type {
+  per_person
+  per_group
+  flat_rate
+}
+
+enum provider_status {
+  pending_review
+  approved_incomplete
+  active
+  suspended
+  rejected
+}
+
+enum ticket_status {
+  active
+  used
+  expired
+  cancelled
+}
+
+enum user_role {
+  tourist
+  provider
+  admin
+}
