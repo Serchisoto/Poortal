@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCategoryBySlug } from '@/queries/categories'
+import { getCategoryBySlug, getSubcategoryBySlug } from '@/queries/categories'
 import { searchExperiences } from '@/queries/experiences'
 import { BackButton } from '../restaurants/back-button'
 
@@ -10,8 +10,16 @@ export const metadata = {
 }
 
 export default async function NightlifeSearchPage() {
-    const category = await getCategoryBySlug('night-life') // matching our db slug
-    const experiences = category ? await searchExperiences({ categoryId: category.id }) : []
+    const [category, subcategory] = await Promise.all([
+        getCategoryBySlug('party'),
+        getSubcategoryBySlug('nightlife'),
+    ])
+    const experiences = category
+        ? await searchExperiences({
+            categoryId: category.id,
+            subcategoryId: subcategory?.id,
+        })
+        : []
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -62,9 +70,8 @@ export default async function NightlifeSearchPage() {
                                     </span>
                                     <div className="flex items-center gap-1 mt-1">
                                         <span className="text-teal-400 font-bold text-xs">
-                                            {exp.price_currency === 'USD' ? '$' : `$${exp.price_amount} ${exp.price_currency}`}
-                                            {/* We can map this better but fallback logic works */}
-                                            {exp.price_currency === 'USD' ? exp.price_amount : ''}
+                                            {new Intl.NumberFormat('es-MX', { style: 'currency', currency: exp.price_currency || 'MXN', maximumFractionDigits: 0 }).format(Number(exp.price_amount))}
+                                            <span className="opacity-70 font-normal ml-0.5">{exp.pricing_type === 'per_person' ? '/px' : '/grupo'}</span>
                                         </span>
                                     </div>
                                 </div>

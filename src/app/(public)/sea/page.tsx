@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
 export default function SeaSearchPage() {
@@ -59,6 +60,7 @@ export default function SeaSearchPage() {
 
                     {/* Expeditions Option */}
                     <button
+                        onClick={() => router.push('/sea/expeditions')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
                     >
                         <div className="mb-4 text-amber-700">
@@ -80,6 +82,7 @@ export default function SeaSearchPage() {
 
                     {/* Go Fishing Option */}
                     <button
+                        onClick={() => router.push('/sea/fishing')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
                     >
                         <div className="mb-4 text-slate-700">

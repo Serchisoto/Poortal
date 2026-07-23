@@ -53,6 +53,7 @@ export default function WellnessSearchPage() {
 
                     {/* Experiences Option */}
                     <button
+                        onClick={() => router.push('/wellness/experiences')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
                     >
                         <div className="mb-4">
@@ -68,6 +69,7 @@ export default function WellnessSearchPage() {
 
                     {/* Health Option */}
                     <button
+                        onClick={() => router.push('/wellness/health')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
                     >
                         <div className="mb-4">

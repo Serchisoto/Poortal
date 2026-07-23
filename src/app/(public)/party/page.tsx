@@ -60,6 +60,7 @@ export default function PartySearchPage() {
 
                     {/* During Day Option */}
                     <button
+                        onClick={() => router.push('/daylife')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
                     >
                         <span className="text-[10px] text-slate-600 font-medium mb-3">8 am - 6 pm</span>

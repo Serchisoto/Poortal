@@ -57,6 +57,7 @@ export default function CultureSearchPage() {
 
                     {/* Experiences Option */}
                     <button
+                        onClick={() => router.push('/culture/experiences')}
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
                     >
                         <div className="mb-4 text-orange-500">

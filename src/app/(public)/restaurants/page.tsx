@@ -1,6 +1,6 @@
 import { ChevronDown, MapPin } from 'lucide-react'
 import Link from 'next/link'
-import { getCategoryBySlug } from '@/queries/categories'
+import { getCategoryBySlug, getSubcategoryBySlug } from '@/queries/categories'
 import { searchExperiences } from '@/queries/experiences'
 import { BackButton } from './back-button'
 import Image from 'next/image'
@@ -10,12 +10,12 @@ export const metadata = {
 }
 
 export default async function RestaurantsSearchPage() {
-    // Fetch the "restaurantes" category to get its ID
-    const category = await getCategoryBySlug('restaurantes')
-
-    // Fetch experiences for the food category (or empty if not found)
+    const [category, subcategory] = await Promise.all([
+        getCategoryBySlug('food'),
+        getSubcategoryBySlug('restaurants'),
+    ])
     const restaurants = category
-        ? await searchExperiences({ categoryId: category.id })
+        ? await searchExperiences({ categoryId: category.id, subcategoryId: subcategory?.id })
         : []
 
     return (
