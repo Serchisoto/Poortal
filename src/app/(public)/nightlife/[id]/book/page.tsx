@@ -1,13 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
+
 import { ChevronLeft, Info, Minus, Plus, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useSession } from '@/lib/auth-client'
 
 export default function NightlifeBookingPage() {
     const router = useRouter()
+    const params = useParams<{ id: string }>()
+    const id = params.id
+    const { data: session } = useSession()
 
     // Mock State for UI interactivity
     const [selectedDate, setSelectedDate] = useState('15-jun')
@@ -34,9 +38,12 @@ export default function NightlifeBookingPage() {
     const totalAmount = tickets.reduce((sum, t) => sum + (t.price * t.qty), 0)
 
     const handleContinue = () => {
-        if (totalAmount > 0) {
-            router.push('/nightlife/1/checkout')
+        if (totalAmount <= 0) return
+        if (!session?.user) {
+            router.push(`/login?redirectTo=/nightlife/${id}/checkout`)
+            return
         }
+        router.push(`/nightlife/${id}/checkout`)
     }
 
     return (
@@ -145,8 +152,8 @@ export default function NightlifeBookingPage() {
             </main>
 
             {/* Sticky Bottom Bar */}
-            <div className="fixed bottom-24 inset-x-0 mx-auto max-w-md px-6 z-40">
-                <div className="bg-white rounded-[2rem] border border-slate-200 shadow-lg px-6 py-4 flex items-center justify-between pointer-events-auto">
+            <div className="fixed bottom-0 inset-x-0 mx-auto max-w-md px-6 z-40 pb-safe-bottom">
+                <div className="mb-6 bg-white rounded-[2rem] border border-slate-200 shadow-lg px-6 py-4 flex items-center justify-between">
                     <div className="flex items-baseline gap-4">
                         <span className="text-teal-700 font-bold tracking-widest text-lg">TOTAL</span>
                         <span className="text-slate-900 font-bold text-lg">$ {totalAmount.toFixed(2)}</span>
@@ -154,9 +161,9 @@ export default function NightlifeBookingPage() {
                     <button
                         onClick={handleContinue}
                         disabled={totalAmount === 0}
-                        className={cn("flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none", totalAmount > 0 ? "bg-teal-700" : "bg-slate-300")}
+                        className={cn("flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none", totalAmount > 0 ? "bg-teal-700" : "bg-slate-300 cursor-not-allowed")}
                     >
-                        continue
+                        {session?.user ? 'continue' : 'log in to book'}
                         <ChevronRight className="h-4 w-4" strokeWidth={3} />
                     </button>
                 </div>

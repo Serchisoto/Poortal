@@ -1,11 +1,25 @@
 'use client'
 
+import { useEffect, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { ChevronLeft, Percent, Plus, Ticket } from 'lucide-react'
+import { useSession } from '@/lib/auth-client'
 
-export default function NightlifeCheckoutPage() {
+function NightlifeCheckoutContent() {
     const router = useRouter()
+    const params = useParams<{ id: string }>()
+    const id = params.id
+    const { data: session } = useSession()
+
+    useEffect(() => {
+        if (session === null) return
+        if (!session?.user) {
+            router.replace(`/login?redirectTo=/nightlife/${id}/checkout`)
+        }
+    }, [session, id, router])
+
+    if (!session?.user && session !== undefined) return null
 
     return (
         <div className="min-h-screen bg-white pb-32 flex flex-col">
@@ -148,5 +162,13 @@ export default function NightlifeCheckoutPage() {
                 </div>
             </main>
         </div>
+    )
+}
+
+export default function NightlifeCheckoutPage() {
+    return (
+        <Suspense>
+            <NightlifeCheckoutContent />
+        </Suspense>
     )
 }
