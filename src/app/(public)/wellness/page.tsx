@@ -1,10 +1,16 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 
 export default function WellnessSearchPage() {
     const router = useRouter()
+    const [pending, startTransition] = useTransition()
+
+    function navigate(href: string) {
+        startTransition(() => { router.push(href) })
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -36,8 +42,9 @@ export default function WellnessSearchPage() {
 
                     {/* Spa Services Option */}
                     <button
-                        onClick={() => router.push('/wellness/spa')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/wellness/spa')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4">
                             {/* Mock Spa/Leaf SVG */}
@@ -53,8 +60,9 @@ export default function WellnessSearchPage() {
 
                     {/* Experiences Option */}
                     <button
-                        onClick={() => router.push('/wellness/experiences')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/wellness/experiences')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4">
                             {/* Mock Water Drop/Ripples SVG */}
@@ -69,8 +77,9 @@ export default function WellnessSearchPage() {
 
                     {/* Health Option */}
                     <button
-                        onClick={() => router.push('/wellness/health')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/wellness/health')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4">
                             {/* Mock Health/Clipboard SVG */}

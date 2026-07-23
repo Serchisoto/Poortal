@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, Star, Clock, MapPin } from 'lucide-react'
@@ -20,20 +20,17 @@ interface TourResultsProps {
 export function TourResults({ config, categoryId, onBack }: TourResultsProps) {
   const [results, setResults] = useState<ExperienceSearchResult[]>([])
   const [loading, setLoading] = useState(true)
+  const fetchedRef = useRef(false)
 
   useEffect(() => {
-    async function fetchResults() {
-      try {
-        const data = await searchToursAction({
-          categoryId: categoryId ?? undefined,
-          availableDate: config.date,
-        })
-        setResults(data)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchResults()
+    if (fetchedRef.current) return
+    fetchedRef.current = true
+    searchToursAction({
+      categoryId: categoryId ?? undefined,
+      availableDate: config.date,
+    })
+      .then(setResults)
+      .finally(() => setLoading(false))
   }, [config, categoryId])
 
   return (

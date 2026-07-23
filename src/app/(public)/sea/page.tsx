@@ -1,11 +1,17 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
 export default function SeaSearchPage() {
     const router = useRouter()
+    const [pending, startTransition] = useTransition()
+
+    function navigate(href: string) {
+        startTransition(() => { router.push(href) })
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -37,8 +43,9 @@ export default function SeaSearchPage() {
 
                     {/* Rent Boat/Yatch Option */}
                     <button
-                        onClick={() => router.push('/rental')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/rental')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4 text-slate-400">
                             {/* Mock Compass SVG */}
@@ -60,8 +67,9 @@ export default function SeaSearchPage() {
 
                     {/* Expeditions Option */}
                     <button
-                        onClick={() => router.push('/sea/expeditions')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/sea/expeditions')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4 text-amber-700">
                             {/* Mock Ship SVG */}
@@ -82,8 +90,9 @@ export default function SeaSearchPage() {
 
                     {/* Go Fishing Option */}
                     <button
-                        onClick={() => router.push('/sea/fishing')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/sea/fishing')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4 text-slate-700">
                             {/* Mock Fishing SVG */}

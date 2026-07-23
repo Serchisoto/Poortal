@@ -1,11 +1,17 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import Image from 'next/image'
 
 export default function PartySearchPage() {
     const router = useRouter()
+    const [pending, startTransition] = useTransition()
+
+    function navigate(href: string) {
+        startTransition(() => { router.push(href) })
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -37,8 +43,9 @@ export default function PartySearchPage() {
 
                     {/* Nightlife Option */}
                     <button
-                        onClick={() => router.push('/nightlife')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/nightlife')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <span className="text-[10px] text-slate-600 font-medium mb-3">6 pm to sunrise</span>
 
@@ -60,8 +67,9 @@ export default function PartySearchPage() {
 
                     {/* During Day Option */}
                     <button
-                        onClick={() => router.push('/daylife')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/daylife')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <span className="text-[10px] text-slate-600 font-medium mb-3">8 am - 6 pm</span>
 
