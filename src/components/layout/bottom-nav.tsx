@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, Wallet, Info } from 'lucide-react'
+import { Compass, Wallet, Info } from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useDestinationStore } from '@/stores/destination-store'
@@ -34,10 +34,10 @@ export function BottomNav() {
           <Info className="h-6 w-6" />
         </Link>
 
-        {/* Home - Bell Center */}
+        {/* Home — Explore center button */}
         <Link href={ROUTES.home} className="relative -top-5">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg ring-4 ring-background">
-            <Bell className="h-7 w-7 fill-current" />
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background">
+            <Compass className="h-6 w-6" strokeWidth={2} />
           </span>
         </Link>
 
