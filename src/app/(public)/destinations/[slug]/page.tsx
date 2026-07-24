@@ -47,15 +47,15 @@ export default async function DestinationPage({
           ) : (
             <div className="absolute inset-0 bg-primary/20" />
           )}
-          {/* Gradient for legibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/80" />
+          {/* Gradient — darker overall for strong contrast on text */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/70" />
 
-          {/* Text anchored to bottom of image */}
-          <div className="absolute bottom-5 left-0 right-0 px-5">
-            <p className="text-white/70 text-[10px] font-semibold tracking-[0.2em] uppercase mb-0.5">
-              {destination.country}
+          {/* Text centred at the top */}
+          <div className="absolute top-0 left-0 right-0 flex flex-col items-center pt-6 px-4 text-center">
+            <p className="text-white/80 text-[9px] font-bold tracking-[0.28em] uppercase drop-shadow mb-1">
+              WELCOME TO
             </p>
-            <h1 className="text-3xl font-bold text-white leading-tight drop-shadow-sm">
+            <h1 className="text-[2rem] font-extrabold text-white leading-tight drop-shadow-lg tracking-tight">
               {destination.name}
             </h1>
           </div>
