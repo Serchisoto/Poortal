@@ -1,11 +1,30 @@
+import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
+import { auth } from '@/lib/auth'
+import prisma from '@/lib/prisma'
 import { Header } from '@/components/layout/header'
 import { AdminSidebar } from '@/components/layout/admin-sidebar'
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await auth.api.getSession({ headers: await headers() })
+
+  if (!session?.user) {
+    redirect('/login?next=/admin/dashboard')
+  }
+
+  const profile = await prisma.profiles.findFirst({
+    where: { user_id: session.user.id },
+    select: { role: true },
+  })
+
+  if (profile?.role !== 'admin') {
+    redirect('/?error=unauthorized')
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
