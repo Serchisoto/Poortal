@@ -20,7 +20,8 @@ export default function LoginPage() {
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') || ''
+  // Support both ?redirectTo= and ?next= (used in different parts of the app)
+  const redirectTo = searchParams.get('redirectTo') || searchParams.get('next') || ''
   const authError = searchParams.get('error')
   const router = useRouter()
 
@@ -36,30 +37,32 @@ function LoginForm() {
     const email = (form.elements.namedItem('email') as HTMLInputElement).value
     const password = (form.elements.namedItem('password') as HTMLInputElement).value
 
-    let authErr: unknown = null
+    let result: Awaited<ReturnType<typeof authClient.signIn.email>> | null = null
     try {
-      const result = await authClient.signIn.email({ email, password })
-      authErr = result.error
+      result = await authClient.signIn.email({ email, password })
     } catch {
       setError('No se pudo conectar al servidor. Intenta de nuevo.')
       setIsPending(false)
       return
     }
 
-    if (authErr) {
+    if (result?.error) {
       setError('Credenciales invalidas. Verifica tu correo y contrasena.')
       setIsPending(false)
       return
     }
+
+    // Flush RSC cache so server components (admin layout auth check) see the new session
+    router.refresh()
+
+    // Determine destination
+    const role = (result?.data?.user as { role?: string } | undefined)?.role
 
     if (redirectTo) {
       router.push(redirectTo)
       return
     }
 
-    // Role-based redirect — session has the role field
-    const session = await authClient.getSession()
-    const role = (session?.data?.user as { role?: string } | undefined)?.role
     if (role === 'admin') router.push('/admin/dashboard')
     else if (role === 'provider') router.push('/provider/dashboard')
     else router.push('/')

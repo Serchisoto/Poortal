@@ -14,7 +14,7 @@ export default async function AdminLayout({
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session?.user) {
-    redirect('/login?next=/admin/dashboard')
+    redirect('/login?redirectTo=/admin/dashboard')
   }
 
   const profile = await prisma.profiles.findFirst({
