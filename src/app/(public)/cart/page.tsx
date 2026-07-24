@@ -248,8 +248,8 @@ export default function CartPage() {
               {/* Coupon Code */}
               <div className="flex justify-center">
                 <button className="flex items-center gap-1.5 active:scale-95 transition-transform">
-                  <Percent className="h-4 w-4 text-teal-600" strokeWidth={3} />
-                  <span className="text-[10px] font-medium text-slate-800 underline decoration-slate-800 underline-offset-2">
+                  <Percent className="h-4 w-4 text-primary" strokeWidth={3} />
+                  <span className="text-[10px] font-medium text-foreground underline decoration-foreground underline-offset-2">
                     coupon code
                   </span>
                 </button>
@@ -260,14 +260,14 @@ export default function CartPage() {
                 <label className="flex items-center gap-3 cursor-pointer" onClick={() => setAgreed((v) => !v)}>
                   <div
                     className={`w-5 h-5 border-2 rounded-sm flex items-center justify-center shrink-0 transition-colors ${
-                      agreed ? 'border-teal-600 bg-teal-600' : 'border-[#A8CCC9] bg-white'
+                      agreed ? 'border-primary bg-primary' : 'border-border bg-background'
                     }`}
                   >
-                    {agreed && <span className="text-white text-[10px] font-bold leading-none">✓</span>}
+                    {agreed && <span className="text-primary-foreground text-[10px] font-bold leading-none">✓</span>}
                   </div>
-                  <span className="text-[11px] text-slate-800 font-medium">
+                  <span className="text-[11px] text-foreground font-medium">
                     I have read and agree to this{' '}
-                    <span className="underline font-bold decoration-slate-800">Terms and Conditions</span>
+                    <span className="underline font-bold decoration-foreground">Terms and Conditions</span>
                   </span>
                 </label>
               </div>
@@ -303,7 +303,7 @@ export default function CartPage() {
                 <button
                   onClick={handleConfirm}
                   disabled={!agreed || loading || sessionLoading}
-                  className="bg-teal-700 disabled:bg-slate-300 text-white rounded-[2rem] px-14 py-3.5 text-base font-semibold active:scale-95 transition-all shadow-md flex items-center gap-2"
+                  className="bg-primary disabled:bg-muted text-primary-foreground disabled:text-muted-foreground rounded-[2rem] px-14 py-3.5 text-base font-semibold active:scale-95 transition-all shadow-md flex items-center gap-2"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                   {loading ? 'Procesando...' : 'Confirm Booking'}
@@ -317,10 +317,10 @@ export default function CartPage() {
       {/* Guest email modal */}
       {showEmailForm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 flex flex-col gap-4">
+          <div className="bg-card rounded-2xl w-full max-w-md p-6 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-teal-50 rounded-full flex items-center justify-center shrink-0">
-                <Mail className="h-5 w-5 text-teal-700" />
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                <Mail className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <h2 className="text-base font-bold text-slate-900">¿A dónde enviamos tu ticket?</h2>
@@ -336,18 +336,18 @@ export default function CartPage() {
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
                   placeholder="Tu nombre"
-                  className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-teal-500 transition-colors"
+                  className="border border-border rounded-lg px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary transition-colors bg-background"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-slate-700">Email *</label>
+                <label className="text-xs font-semibold text-foreground">Email *</label>
                 <input
                   type="email"
                   value={guestEmail}
                   onChange={(e) => setGuestEmail(e.target.value)}
                   placeholder="tu@email.com"
                   autoFocus
-                  className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-teal-500 transition-colors"
+                  className="border border-border rounded-lg px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary transition-colors bg-background"
                 />
                 {emailError && <p className="text-xs text-red-500">{emailError}</p>}
               </div>
@@ -363,7 +363,7 @@ export default function CartPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-teal-700 disabled:bg-slate-300 text-white rounded-xl py-3 text-sm font-semibold active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-primary disabled:bg-muted text-primary-foreground disabled:text-muted-foreground rounded-xl py-3 text-sm font-semibold active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                   {loading ? 'Procesando...' : 'Confirmar reserva'}

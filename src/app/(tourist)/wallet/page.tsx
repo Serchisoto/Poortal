@@ -57,7 +57,7 @@ export default async function WalletPage({ searchParams }: Props) {
       return (
         <div className="bg-background pb-20">
           {confirmed === '1' && (
-            <div className="bg-teal-700 text-white px-6 py-4">
+            <div className="bg-primary text-white px-6 py-4">
               <div className="max-w-lg mx-auto flex items-center gap-3">
                 <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -85,19 +85,19 @@ export default async function WalletPage({ searchParams }: Props) {
           </div>
           {/* Soft invite to register */}
           <div className="container mx-auto max-w-md px-6 mt-8">
-            <div className="bg-teal-50 border border-teal-100 rounded-2xl p-5 flex flex-col gap-3">
-              <p className="text-sm font-semibold text-teal-800">¿Quieres guardar tus tickets para siempre?</p>
-              <p className="text-xs text-teal-700">Crea una cuenta gratis y accede a tus reservaciones desde cualquier dispositivo.</p>
+            <div className="bg-primary/10 border border-primary/10 rounded-2xl p-5 flex flex-col gap-3">
+              <p className="text-sm font-semibold text-foreground">¿Quieres guardar tus tickets para siempre?</p>
+              <p className="text-xs text-primary">Crea una cuenta gratis y accede a tus reservaciones desde cualquier dispositivo.</p>
               <div className="flex gap-2">
                 <Link
                   href="/register"
-                  className="flex-1 text-center bg-teal-700 text-white rounded-xl py-2.5 text-xs font-semibold active:scale-95 transition-transform"
+                  className="flex-1 text-center bg-primary text-white rounded-xl py-2.5 text-xs font-semibold active:scale-95 transition-transform"
                 >
                   Crear cuenta
                 </Link>
                 <Link
                   href="/login?redirectTo=/wallet"
-                  className="flex-1 text-center border border-teal-300 text-teal-700 rounded-xl py-2.5 text-xs font-semibold active:scale-95 transition-transform"
+                  className="flex-1 text-center border border-primary/30 text-primary rounded-xl py-2.5 text-xs font-semibold active:scale-95 transition-transform"
                 >
                   Ya tengo cuenta
                 </Link>
@@ -111,8 +111,8 @@ export default async function WalletPage({ searchParams }: Props) {
     return (
       <>
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-          <div className="w-20 h-20 rounded-full bg-teal-50 flex items-center justify-center mb-6">
-            <Ticket className="h-9 w-9 text-teal-400" />
+          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <Ticket className="h-9 w-9 text-primary/60" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 mb-2">Tu wallet está vacío</h2>
           <p className="text-sm text-slate-500 mb-8 max-w-xs">
@@ -121,7 +121,7 @@ export default async function WalletPage({ searchParams }: Props) {
           <div className="flex flex-col gap-3 w-full max-w-xs">
             <Link
               href="/register"
-              className="block text-center bg-teal-700 text-white rounded-2xl py-3.5 text-sm font-semibold active:scale-95 transition-transform"
+              className="block text-center bg-primary text-white rounded-2xl py-3.5 text-sm font-semibold active:scale-95 transition-transform"
             >
               Crear cuenta gratis
             </Link>
@@ -170,7 +170,7 @@ export default async function WalletPage({ searchParams }: Props) {
   return (
     <div className="bg-background pb-20">
       {confirmed === '1' && (
-        <div className="bg-teal-700 text-white px-6 py-4">
+        <div className="bg-primary text-white px-6 py-4">
           <div className="max-w-lg mx-auto flex items-center gap-3">
             <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

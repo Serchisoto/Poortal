@@ -73,7 +73,7 @@ export default async function RentalDetailPage({
                 <div className="flex justify-center -mt-2 mb-6 w-full">
                     <Link
                         href={`/rental/${id}/book`}
-                        className="flex items-center justify-center gap-2 bg-[#2b666a] text-white rounded-md px-10 py-3 active:scale-95 transition-transform shadow-md w-[80%]"
+                        className="flex items-center justify-center gap-2 bg-primary text-white rounded-md px-10 py-3 active:scale-95 transition-transform shadow-md w-[80%]"
                     >
                         {/* Custom Ticket SVG matching mockup */}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
@@ -132,7 +132,7 @@ export default async function RentalDetailPage({
                             <button className="text-[11px] font-semibold text-slate-800 underline decoration-slate-800 underline-offset-2">
                                 more info
                             </button>
-                            <button className="text-teal-700 active:scale-95 transition-transform ml-2">
+                            <button className="text-primary active:scale-95 transition-transform ml-2">
                                 <Share2 className="h-5 w-5" />
                             </button>
                         </div>

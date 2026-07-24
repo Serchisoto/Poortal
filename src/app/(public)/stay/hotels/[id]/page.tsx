@@ -60,7 +60,7 @@ export default function HotelDetailPage() {
                 <div className="flex justify-center -mt-2 mb-6">
                     <button
                         onClick={() => router.push(`/stay/hotels/${id}/book`)}
-                        className="flex items-center justify-center gap-2 bg-[#2b666a] text-white rounded-md px-10 py-3 active:scale-95 transition-transform shadow-md"
+                        className="flex items-center justify-center gap-2 bg-primary text-white rounded-md px-10 py-3 active:scale-95 transition-transform shadow-md"
                     >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                             <rect width="18" height="14" x="3" y="5" rx="2" ry="2" />
@@ -120,7 +120,7 @@ export default function HotelDetailPage() {
                             <button className="text-[11px] font-semibold text-slate-800 underline decoration-slate-800 underline-offset-2">
                                 map
                             </button>
-                            <button className="text-teal-700 active:scale-95 transition-transform ml-2">
+                            <button className="text-primary active:scale-95 transition-transform ml-2">
                                 <Share2 className="h-5 w-5" />
                             </button>
                         </div>

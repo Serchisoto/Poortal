@@ -135,7 +135,7 @@ export function BookingSidebar({
           {/* Price + buttons */}
           <div className="flex items-center gap-3">
             <div className="flex-1">
-              <span className="text-lg font-bold text-teal-700">
+              <span className="text-lg font-bold text-primary">
                 {selectedSlot ? formattedTotal : formattedPrice}
               </span>
               <span className="text-xs text-muted-foreground ml-1">{pricingLabel}</span>
@@ -153,7 +153,7 @@ export function BookingSidebar({
             <button
               onClick={handleBookNow}
               disabled={!selectedSlot}
-              className="flex items-center gap-1.5 bg-teal-700 text-white rounded-xl px-4 py-2.5 text-sm font-semibold active:scale-95 transition-all disabled:opacity-40"
+              className="flex items-center gap-1.5 bg-primary text-primary-foreground rounded-xl px-4 py-2.5 text-sm font-semibold active:scale-95 transition-all disabled:opacity-40"
             >
               <Ticket className="h-4 w-4" />
               booking

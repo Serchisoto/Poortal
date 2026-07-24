@@ -63,7 +63,7 @@ export function RestaurantCard({
                         </button>
                         <button
                             onClick={onShare}
-                            className="text-teal-700 active:scale-95 transition-transform"
+                            className="text-primary active:scale-95 transition-transform"
                         >
                             <Share2 className="h-5 w-5" />
                         </button>
@@ -94,13 +94,13 @@ export function RestaurantCard({
                     <div className="shrink-0 flex flex-col items-end gap-1.5">
                         <Link
                             href={moreInfoLink}
-                            className="text-[10px] text-teal-700 underline decoration-teal-700 underline-offset-2 hover:text-teal-800"
+                            className="text-[10px] text-primary underline decoration-teal-700 underline-offset-2 hover:text-teal-800"
                         >
                             more info
                         </Link>
                         <button
                             onClick={onBookClick || handleBookRoute}
-                            className="flex items-center justify-center gap-1.5 bg-teal-700 text-white rounded-md px-4 py-1.5 active:scale-95 transition-transform"
+                            className="flex items-center justify-center gap-1.5 bg-primary text-white rounded-md px-4 py-1.5 active:scale-95 transition-transform"
                         >
                             <Ticket className="h-4 w-4" />
                             <span className="text-xs font-semibold">book</span>

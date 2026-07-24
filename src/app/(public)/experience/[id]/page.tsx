@@ -80,7 +80,7 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
             {/* Tickets CTA */}
             <Link
               href={`/experience/${id}/book`}
-              className="flex items-center justify-center gap-3 w-full bg-teal-700 text-white rounded-xl py-4 text-base font-bold tracking-wide active:scale-95 transition-transform"
+              className="flex items-center justify-center gap-3 w-full bg-primary text-white rounded-xl py-4 text-base font-bold tracking-wide active:scale-95 transition-transform"
             >
               <Ticket className="h-5 w-5" />
               Tickets

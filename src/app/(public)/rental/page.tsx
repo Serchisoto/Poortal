@@ -38,7 +38,7 @@ export default async function RentalSearchPage() {
                         Order A-Z
                         <ChevronDown className="h-4 w-4 opacity-80" strokeWidth={3} />
                     </button>
-                    <button className="flex items-center gap-2 bg-white border border-slate-300 text-teal-700 rounded-full px-4 py-1.5 text-sm font-medium shadow-sm active:scale-95 transition-transform">
+                    <button className="flex items-center gap-2 bg-white border border-slate-300 text-primary rounded-full px-4 py-1.5 text-sm font-medium shadow-sm active:scale-95 transition-transform">
                         Budget
                         <ChevronDown className="h-4 w-4 opacity-80" strokeWidth={3} />
                     </button>

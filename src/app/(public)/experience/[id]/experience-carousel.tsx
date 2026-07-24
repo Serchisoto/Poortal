@@ -97,7 +97,7 @@ export function ExperienceCarousel({ images, title, description }: ExperienceCar
               onClick={() => setCurrent(i)}
               className={cn(
                 'rounded-full transition-all',
-                i === current ? 'h-2 w-4 bg-teal-500' : 'h-2 w-2 bg-white/50'
+                i === current ? 'h-2 w-4 bg-primary' : 'h-2 w-2 bg-white/50'
               )}
             />
           ))}

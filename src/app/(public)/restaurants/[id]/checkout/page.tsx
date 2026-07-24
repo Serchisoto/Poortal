@@ -124,7 +124,7 @@ export default function RestaurantCheckoutPage() {
                 {/* Coupon Code */}
                 <div className="flex justify-center mt-2">
                     <button className="flex items-center gap-1.5 active:scale-95 transition-transform">
-                        <Percent className="h-4 w-4 text-teal-600" strokeWidth={3} />
+                        <Percent className="h-4 w-4 text-primary" strokeWidth={3} />
                         <span className="text-[10px] font-medium text-slate-800 underline decoration-slate-800 underline-offset-2">coupon code</span>
                     </button>
                 </div>
@@ -133,14 +133,14 @@ export default function RestaurantCheckoutPage() {
                 <div className="flex gap-4 mt-4">
                     <button
                         onClick={() => router.push('/cart')}
-                        className="flex-1 flex items-center justify-center gap-2 border border-teal-700 text-teal-700 rounded-md py-3 active:scale-95 transition-transform bg-white"
+                        className="flex-1 flex items-center justify-center gap-2 border border-primary text-primary rounded-md py-3 active:scale-95 transition-transform bg-white"
                     >
                         <Plus className="h-5 w-5" strokeWidth={2} />
                         <span className="text-sm font-semibold">add to cart</span>
                     </button>
                     <button
                         onClick={() => router.push('/success')}
-                        className="flex-1 flex items-center justify-center gap-2 bg-teal-700 text-white rounded-md py-3 active:scale-95 transition-transform"
+                        className="flex-1 flex items-center justify-center gap-2 bg-primary text-white rounded-md py-3 active:scale-95 transition-transform"
                     >
                         <Ticket className="h-5 w-5" />
                         <span className="text-sm font-semibold">pay now</span>

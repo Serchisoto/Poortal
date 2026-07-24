@@ -119,18 +119,18 @@ export function BookingFlow({
   }
 
   return (
-    <div className="h-full bg-white flex flex-col overflow-hidden">
+    <div className="h-full bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-6 pb-4 flex-shrink-0">
         <button
           onClick={() => router.back()}
-          className="p-2 -ml-2 text-slate-900 active:scale-95 transition-transform"
+          className="p-2 -ml-2 text-foreground active:scale-95 transition-transform"
         >
           <ChevronLeft className="h-8 w-8" strokeWidth={3} />
         </button>
         <div className="flex-1 flex items-center justify-center">
-          <div className="border border-slate-200 rounded-full px-10 py-2.5 shadow-sm">
-            <h1 className="text-base font-bold text-slate-800 tracking-wide uppercase text-center">
+          <div className="border border-border rounded-full px-10 py-2.5 shadow-sm">
+            <h1 className="text-base font-bold text-foreground tracking-wide uppercase text-center">
               {experience.title}
             </h1>
           </div>
@@ -152,8 +152,8 @@ export function BookingFlow({
                   className={cn(
                     'flex flex-col items-center justify-center rounded-full px-5 py-2.5 shrink-0 transition-colors',
                     isSelected
-                      ? 'bg-teal-700 text-white'
-                      : 'border border-slate-200 text-slate-600'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'border border-border text-muted-foreground'
                   )}
                 >
                   <span className="text-[10px] font-bold tracking-wider uppercase">{day}</span>
@@ -178,8 +178,8 @@ export function BookingFlow({
                 className={cn(
                   'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
                   selectedSlot?.id === slot.id
-                    ? 'bg-teal-700 text-white'
-                    : 'border border-slate-200 text-slate-600'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'border border-border text-muted-foreground'
                 )}
               >
                 {formatTime(slot.start_time)}
@@ -191,7 +191,7 @@ export function BookingFlow({
         {/* Subcategory tabs (if available) */}
         {experience.subcategoryName && (
           <div className="flex gap-2">
-            <button className="flex-1 py-3 text-xs font-semibold rounded-md bg-teal-700 text-white shadow-sm">
+            <button className="flex-1 py-3 text-xs font-semibold rounded-md bg-primary text-primary-foreground shadow-sm">
               {experience.subcategoryName.toUpperCase()}
             </button>
           </div>
@@ -211,20 +211,20 @@ export function BookingFlow({
               return (
                 <div
                   key={i}
-                  className="flex items-center justify-between px-4 py-3 rounded-full border border-slate-200 shadow-sm bg-white"
+                  className="flex items-center justify-between px-4 py-3 rounded-full border border-border shadow-sm bg-background"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-teal-700 rounded-full h-6 w-6 flex items-center justify-center shrink-0">
-                      <Info className="text-white h-3.5 w-3.5" strokeWidth={3} />
+                    <div className="bg-primary rounded-full h-6 w-6 flex items-center justify-center shrink-0">
+                      <Info className="text-primary-foreground h-3.5 w-3.5" strokeWidth={3} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-teal-700 font-bold leading-tight">
+                      <span className="text-[10px] text-primary font-bold leading-tight">
                         {experience.pricingType === 'per_person' ? 'Regular Ticket' : 'Group Ticket'}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium leading-tight mb-0.5">
+                      <span className="text-[10px] text-muted-foreground font-medium leading-tight mb-0.5">
                         {experience.subcategoryName || 'General'}
                       </span>
-                      <span className="font-bold text-slate-900 text-sm">{formatted}</span>
+                      <span className="font-bold text-foreground text-sm">{formatted}</span>
                     </div>
                   </div>
 
@@ -232,7 +232,7 @@ export function BookingFlow({
                     <div className="flex items-center gap-4 pr-1">
                       <button
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        className="p-1 active:scale-95 text-slate-900"
+                        className="p-1 active:scale-95 text-foreground"
                       >
                         <Minus className="h-5 w-5" strokeWidth={3} />
                       </button>
@@ -241,13 +241,13 @@ export function BookingFlow({
                       )}
                       <button
                         onClick={() => setQuantity((q) => Math.min(availableSpots, q + 1))}
-                        className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95"
+                        className="bg-primary text-primary-foreground rounded-full p-1.5 shadow-sm active:scale-95"
                       >
                         <Plus className="h-5 w-5" strokeWidth={3} />
                       </button>
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-400">x1</span>
+                    <span className="text-xs text-muted-foreground">x1</span>
                   )}
                 </div>
               )
@@ -257,18 +257,18 @@ export function BookingFlow({
       </main>
 
       {/* Bottom bar */}
-      <div className="flex-shrink-0 px-6 pb-6 pt-2 bg-white border-t border-slate-100">
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-lg px-6 py-4 flex items-center justify-between">
+      <div className="flex-shrink-0 px-6 pb-6 pt-2 bg-background border-t border-border/50">
+        <div className="bg-background rounded-[2rem] border border-border shadow-lg px-6 py-4 flex items-center justify-between">
           <div className="flex items-baseline gap-4">
-            <span className="text-teal-700 font-bold tracking-widest text-lg">TOTAL</span>
-            <span className="text-slate-900 font-bold text-lg">{formattedTotal}</span>
+            <span className="text-primary font-bold tracking-widest text-lg">TOTAL</span>
+            <span className="text-foreground font-bold text-lg">{formattedTotal}</span>
           </div>
           <button
             onClick={handleContinue}
             disabled={!selectedSlot}
             className={cn(
-              'flex items-center gap-1 text-white rounded-xl px-5 py-2.5 text-sm font-semibold active:scale-95 transition-all',
-              selectedSlot ? 'bg-teal-700' : 'bg-slate-300'
+              'flex items-center gap-1 text-primary-foreground rounded-xl px-5 py-2.5 text-sm font-semibold active:scale-95 transition-all',
+              selectedSlot ? 'bg-primary' : 'bg-muted text-muted-foreground'
             )}
           >
             continue

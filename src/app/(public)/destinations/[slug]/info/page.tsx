@@ -92,7 +92,7 @@ export default async function DestinationInfoPage({
                                 >
                                     <DynamicIcon
                                         name={col.icon}
-                                        className={cn('h-8 w-8', 'text-teal-600')}
+                                        className={cn('h-8 w-8', 'text-primary')}
                                         strokeWidth={1.25}
                                     />
                                     <span className="text-[9px] font-medium text-muted-foreground text-center leading-tight">{col.name}</span>

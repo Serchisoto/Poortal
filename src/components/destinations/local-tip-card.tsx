@@ -35,7 +35,7 @@ export function LocalTipCard({
                     </div>
                     <button
                         onClick={onShare}
-                        className="text-teal-700 active:scale-95 transition-transform"
+                        className="text-primary active:scale-95 transition-transform"
                     >
                         <Share2 className="h-5 w-5" />
                     </button>
@@ -65,7 +65,7 @@ export function LocalTipCard({
 
                 <button
                     onClick={onBlogClick}
-                    className="shrink-0 flex items-center justify-center gap-1.5 bg-teal-700 text-white rounded-md px-3 py-1.5 active:scale-95 transition-transform"
+                    className="shrink-0 flex items-center justify-center gap-1.5 bg-primary text-white rounded-md px-3 py-1.5 active:scale-95 transition-transform"
                 >
                     <FileText className="h-4 w-4" />
                     <span className="text-xs font-semibold">blog</span>

@@ -50,7 +50,7 @@ export default async function CollectionInfoPage({
                 <div className="flex flex-col items-center justify-center mb-8">
                     <DynamicIcon
                         name={collection.icon}
-                        className="h-12 w-12 mb-2 text-teal-600"
+                        className="h-12 w-12 mb-2 text-primary"
                         strokeWidth={1.5}
                     />
                     <h1 className="text-base text-slate-700 underline underline-offset-4 decoration-slate-400">
@@ -59,7 +59,7 @@ export default async function CollectionInfoPage({
                 </div>
 
                 {collection.description && (
-                    <h2 className="text-teal-700 font-semibold mb-6">{collection.description}</h2>
+                    <h2 className="text-primary font-semibold mb-6">{collection.description}</h2>
                 )}
             </div>
 
@@ -100,10 +100,10 @@ export default async function CollectionInfoPage({
                                             )}
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
-                                            <span className="text-sm font-bold text-teal-700">{formattedPrice}</span>
+                                            <span className="text-sm font-bold text-primary">{formattedPrice}</span>
                                             <Link
                                                 href={ROUTES.experience(exp.id)}
-                                                className="flex items-center gap-1.5 bg-teal-700 text-white rounded-md px-4 py-1.5 text-xs font-semibold active:scale-95 transition-transform"
+                                                className="flex items-center gap-1.5 bg-primary text-white rounded-md px-4 py-1.5 text-xs font-semibold active:scale-95 transition-transform"
                                             >
                                                 <Ticket className="h-3.5 w-3.5" />
                                                 book
@@ -118,7 +118,7 @@ export default async function CollectionInfoPage({
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <DynamicIcon
                             name={collection.icon}
-                            className="h-12 w-12 mb-3 opacity-20 text-teal-600"
+                            className="h-12 w-12 mb-3 opacity-20 text-primary"
                             strokeWidth={1}
                         />
                         <p className="text-sm text-muted-foreground">No hay experiencias disponibles aun</p>

@@ -99,7 +99,7 @@ export default async function TicketDetailPage({
         {/* Ticket card */}
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         {/* Header strip */}
-        <div className="bg-teal-700 px-6 py-5 text-white">
+        <div className="bg-primary px-6 py-5 text-white">
           <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-1">
             {ticket.provider_profiles?.business_name || 'Proveedor'}
           </p>
@@ -161,7 +161,7 @@ export default async function TicketDetailPage({
             <span
               className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 ticket.status === 'active'
-                  ? 'bg-teal-100 text-teal-700'
+                  ? 'bg-teal-100 text-primary'
                   : 'bg-slate-100 text-slate-500'
               }`}
             >

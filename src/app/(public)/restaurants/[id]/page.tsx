@@ -89,7 +89,7 @@ export default async function RestaurantDetailPage({
                                 {experience.title}
                             </h3>
                             <div className="flex items-center gap-1.5">
-                                <span className="font-bold text-lg text-teal-700">{formattedPrice}</span>
+                                <span className="font-bold text-lg text-primary">{formattedPrice}</span>
                                 {isPerPerson && <span className="text-[10px] text-slate-500 font-medium uppercase mt-1">p.p.</span>}
                             </div>
                         </div>
@@ -116,7 +116,7 @@ export default async function RestaurantDetailPage({
                     {/* Location Footer */}
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex items-start gap-3 flex-1">
-                            <MapPin className="h-5 w-5 text-teal-700 shrink-0 mt-0.5" />
+                            <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                             <div className="flex flex-col gap-1">
                                 <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Location</span>
                                 <span className="text-sm text-slate-700 leading-snug">
@@ -124,7 +124,7 @@ export default async function RestaurantDetailPage({
                                 </span>
                             </div>
                         </div>
-                        <button className="text-teal-600 bg-teal-50 p-2.5 rounded-full active:scale-95 transition-transform mt-2 shrink-0">
+                        <button className="text-primary bg-primary/10 p-2.5 rounded-full active:scale-95 transition-transform mt-2 shrink-0">
                             <Share2 className="h-4 w-4" strokeWidth={2.5} />
                         </button>
                     </div>
