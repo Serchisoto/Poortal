@@ -4,6 +4,138 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'Poortal <onboarding@resend.dev>'
 
+// ---------------------------------------------------------------------------
+// Password Reset
+// ---------------------------------------------------------------------------
+export async function sendPasswordResetEmail({
+  toEmail,
+  toName,
+  resetUrl,
+}: {
+  toEmail: string
+  toName: string | null
+  resetUrl: string
+}) {
+  const greeting = toName ? `Hola, ${toName}!` : 'Hola!'
+
+  const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;">
+        <tr>
+          <td style="background:#0f766e;padding:32px 40px;text-align:center;">
+            <p style="margin:0;font-size:26px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Poortal</p>
+            <p style="margin:8px 0 0;font-size:13px;color:#99f6e4;letter-spacing:0.5px;text-transform:uppercase;">Restablecer contrasena</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px;">
+            <p style="margin:0 0 16px;font-size:15px;color:#334155;">${greeting}</p>
+            <p style="margin:0 0 28px;font-size:14px;color:#475569;line-height:1.6;">
+              Recibimos una solicitud para restablecer la contrasena de tu cuenta. Haz clic en el boton de abajo para crear una nueva contrasena. Este enlace expira en 1 hora.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr><td align="center">
+                <a href="${resetUrl}" style="display:inline-block;background:#0f766e;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:10px;">
+                  Restablecer contrasena
+                </a>
+              </td></tr>
+            </table>
+            <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6;">
+              Si no solicitaste este cambio, ignora este correo. Tu contrasena no sera modificada.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0;">
+            <p style="margin:0;font-size:11px;color:#94a3b8;">Poortal &bull; Tu portal de experiencias en Mexico</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`.trim()
+
+  try {
+    await resend.emails.send({ from: FROM, to: toEmail, subject: 'Restablece tu contrasena — Poortal', html })
+    return { ok: true }
+  } catch (err) {
+    console.error('[email] sendPasswordResetEmail failed:', err)
+    return { ok: false }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Email Verification
+// ---------------------------------------------------------------------------
+export async function sendVerificationEmail({
+  toEmail,
+  toName,
+  verifyUrl,
+}: {
+  toEmail: string
+  toName: string | null
+  verifyUrl: string
+}) {
+  const greeting = toName ? `Hola, ${toName}!` : 'Hola!'
+
+  const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;">
+        <tr>
+          <td style="background:#0f766e;padding:32px 40px;text-align:center;">
+            <p style="margin:0;font-size:26px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Poortal</p>
+            <p style="margin:8px 0 0;font-size:13px;color:#99f6e4;letter-spacing:0.5px;text-transform:uppercase;">Verifica tu correo</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px;">
+            <p style="margin:0 0 16px;font-size:15px;color:#334155;">${greeting}</p>
+            <p style="margin:0 0 28px;font-size:14px;color:#475569;line-height:1.6;">
+              Gracias por registrarte en Poortal. Haz clic en el boton de abajo para verificar tu correo electronico y activar tu cuenta.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr><td align="center">
+                <a href="${verifyUrl}" style="display:inline-block;background:#0f766e;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:10px;">
+                  Verificar correo
+                </a>
+              </td></tr>
+            </table>
+            <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6;">
+              Si no creaste una cuenta en Poortal, ignora este correo.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0;">
+            <p style="margin:0;font-size:11px;color:#94a3b8;">Poortal &bull; Tu portal de experiencias en Mexico</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`.trim()
+
+  try {
+    await resend.emails.send({ from: FROM, to: toEmail, subject: 'Verifica tu correo — Poortal', html })
+    return { ok: true }
+  } catch (err) {
+    console.error('[email] sendVerificationEmail failed:', err)
+    return { ok: false }
+  }
+}
+
 export interface BookingConfirmationData {
   toEmail: string
   toName: string | null
