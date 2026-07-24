@@ -48,30 +48,35 @@ function LoginForm() {
       return
     }
 
-    // Determine destination: poll /api/auth/get-session until the session cookie
-    // is visible server-side (confirms the cookie has landed), then navigate.
-    let destination = redirectTo || '/'
-    if (!redirectTo) {
+    // The sign-in response sets the session cookie via Set-Cookie. We must wait
+    // until the browser has applied that cookie before navigating, otherwise the
+    // first request to /admin/dashboard goes out without it and the middleware
+    // redirects back to login. Poll server-side get-session (which reads from
+    // the incoming request cookies) until it returns a valid session.
+    let role: string | undefined
+    for (let i = 0; i < 15; i++) {
+      await new Promise(r => setTimeout(r, 300))
       try {
-        const profileRes = await fetch('/api/profile', { credentials: 'include' })
-        if (profileRes.ok) {
-          const profile = await profileRes.json()
-          if (profile?.role === 'admin') destination = '/admin/dashboard'
-          else if (profile?.role === 'provider') destination = '/provider/dashboard'
+        const sessionRes = await fetch('/api/auth/get-session', { credentials: 'include' })
+        if (sessionRes.ok) {
+          const data = await sessionRes.json()
+          if (data?.session?.id) {
+            role = data?.user?.role
+            break
+          }
         }
-      } catch { /* fall through to default */ }
-    }
-
-    // Poll until the server confirms the session exists (max 3s), then navigate.
-    for (let i = 0; i < 6; i++) {
-      await new Promise(r => setTimeout(r, 250))
-      try {
-        const s = await fetch('/api/auth/get-session', { credentials: 'include' })
-        const data = await s.json()
-        if (data?.session) break
       } catch { /* keep polling */ }
     }
 
+    let destination = redirectTo || '/'
+    if (!redirectTo) {
+      if (role === 'admin') destination = '/admin/dashboard'
+      else if (role === 'provider') destination = '/provider/dashboard'
+    }
+
+    // One extra tick so the browser cookie jar is fully committed before the
+    // full-page navigation triggers the server-side middleware check.
+    await new Promise(r => setTimeout(r, 100))
     window.location.href = destination
   }
 

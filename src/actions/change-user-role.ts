@@ -26,7 +26,7 @@ export async function changeUserRoleAction(
 
   const target = await prisma.profiles.findUnique({
     where: { id: profileId },
-    select: { role: true, email: true },
+    select: { role: true, email: true, user_id: true },
   })
   if (!target) return { error: 'Usuario no encontrado.' }
 
@@ -43,6 +43,15 @@ export async function changeUserRoleAction(
     where: { id: profileId },
     data: { role: newRole },
   })
+
+  // Keep Better Auth's user.role in sync — the edge middleware authorizes
+  // role-based routes based on this field, not on profiles.role.
+  if (target.user_id) {
+    await prisma.user.update({
+      where: { id: target.user_id },
+      data: { role: newRole },
+    })
+  }
 
   revalidatePath('/admin/users')
   return { success: `Rol actualizado a "${newRole}" para ${target.email}.` }

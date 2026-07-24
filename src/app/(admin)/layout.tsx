@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
 import { AdminHeader } from '@/components/layout/admin-header'
 import { AdminSidebar } from '@/components/layout/admin-sidebar'
 import { AdminBottomNav } from '@/components/layout/admin-bottom-nav'
@@ -17,12 +16,8 @@ export default async function AdminLayout({
     redirect('/login?redirectTo=/admin/dashboard')
   }
 
-  const profile = await prisma.profiles.findFirst({
-    where: { user_id: session.user.id },
-    select: { role: true },
-  })
-
-  if (profile?.role !== 'admin') {
+  // Single source of truth: user.role in Better Auth (mirrors the edge middleware)
+  if ((session.user as { role?: string }).role !== 'admin') {
     redirect('/?error=unauthorized')
   }
 

@@ -6,7 +6,14 @@ type SessionUser = { id: string; role?: string } | null
 
 async function getSessionUser(request: NextRequest): Promise<SessionUser> {
   try {
-    const url = new URL('/api/auth/get-session', request.url)
+    // Build the internal URL. In dev the server runs on plain HTTP even when
+    // the edge runtime sees an https:// request URL, so we force http to avoid
+    // ERR_SSL_PACKET_LENGTH_TOO_LONG on the internal fetch.
+    const requestUrl = new URL(request.url)
+    const internalOrigin = requestUrl.hostname === 'localhost'
+      ? `http://localhost:${requestUrl.port || 3000}`
+      : requestUrl.origin
+    const url = new URL('/api/auth/get-session', internalOrigin)
     const res = await fetch(url, { headers: request.headers })
     if (!res.ok) return null
     const data = await res.json()
