@@ -10,5 +10,8 @@ export async function GET(request: NextRequest) {
     where: { user_id: session.user.id },
   })
 
-  return NextResponse.json({ profile })
+  // Merge user.role (single source of truth) on top of the profile row
+  const role = (session.user as { role?: string }).role ?? profile?.role ?? 'tourist'
+
+  return NextResponse.json({ ...profile, role })
 }

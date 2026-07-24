@@ -53,25 +53,18 @@ function LoginForm() {
     let destination = redirectTo || '/'
     if (!redirectTo) {
       try {
-        const profileRes = await fetch('/api/profile', { credentials: 'include' })
-        if (profileRes.ok) {
-          const profile = await profileRes.json()
-          if (profile?.role === 'admin') destination = '/admin/dashboard'
-          else if (profile?.role === 'provider') destination = '/provider/dashboard'
+        // Poll session directly — role lives in user.role (Better Auth)
+        const sessionRes = await fetch('/api/auth/get-session', { credentials: 'include' })
+        if (sessionRes.ok) {
+          const data = await sessionRes.json()
+          const role = data?.user?.role
+          if (role === 'admin') destination = '/admin/dashboard'
+          else if (role === 'provider') destination = '/provider/dashboard'
         }
       } catch { /* fall through to default */ }
     }
 
-    // Poll until the server confirms the session exists (max 3s), then navigate.
-    for (let i = 0; i < 6; i++) {
-      await new Promise(r => setTimeout(r, 250))
-      try {
-        const s = await fetch('/api/auth/get-session', { credentials: 'include' })
-        const data = await s.json()
-        if (data?.session) break
-      } catch { /* keep polling */ }
-    }
-
+    // The session fetch above already confirmed the cookie landed — navigate.
     window.location.href = destination
   }
 
