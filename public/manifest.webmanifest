@@ -1,0 +1,38 @@
+{
+  "name": "POORTAL – Concierge Digital",
+  "short_name": "POORTAL",
+  "description": "Tu concierge digital para destinos turisticos. Tours, actividades, restaurantes y mas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#246A73",
+  "orientation": "portrait-primary",
+  "categories": ["travel", "lifestyle"],
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explorar",
+      "url": "/",
+      "description": "Explorar experiencias"
+    },
+    {
+      "name": "Mi Wallet",
+      "url": "/wallet",
+      "description": "Ver mis tickets y reservas"
+    }
+  ]
+}

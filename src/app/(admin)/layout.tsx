@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { Header } from '@/components/layout/header'
 import { AdminSidebar } from '@/components/layout/admin-sidebar'
+import { AdminBottomNav } from '@/components/layout/admin-bottom-nav'
 
 export default async function AdminLayout({
   children,
@@ -30,10 +31,11 @@ export default async function AdminLayout({
       <Header />
       <div className="flex flex-1">
         <AdminSidebar />
-        <main className="flex-1 p-6 lg:p-8">
+        <main className="flex-1 p-4 pb-24 lg:p-8 lg:pb-8">
           {children}
         </main>
       </div>
+      <AdminBottomNav />
     </div>
   )
 }
