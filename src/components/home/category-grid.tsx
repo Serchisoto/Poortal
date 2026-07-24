@@ -54,6 +54,7 @@ export function CategoryGrid({ enabledSlugs }: CategoryGridProps) {
             {categories.map((category) => {
                 let href = `${ROUTES.explore}?category=${category.slug}`
                 if (category.slug === 'tours')    href = ROUTES.tours
+                if (category.slug === 'ride')     href = '/ride'
                 if (category.slug === 'party')    href = ROUTES.party
                 if (category.slug === 'sea')      href = ROUTES.sea
                 if (category.slug === 'culture')  href = ROUTES.culture

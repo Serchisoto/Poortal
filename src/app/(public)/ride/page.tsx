@@ -2,9 +2,9 @@
 
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, ConciergeBell, Sparkles, Bike } from 'lucide-react'
+import { ChevronLeft, Car, Clock, Zap } from 'lucide-react'
 
-export default function FoodSearchPage() {
+export default function RideSearchPage() {
     const router = useRouter()
     const [pending, startTransition] = useTransition()
 
@@ -22,9 +22,9 @@ export default function FoodSearchPage() {
                 >
                     <ChevronLeft className="h-8 w-8" strokeWidth={3} />
                 </button>
-                <div className="border border-slate-200 bg-white rounded-full px-14 py-3 shadow-sm absolute left-1/2 -translate-x-1/2">
+                <div className="border border-slate-200 bg-white rounded-full px-12 py-3 shadow-sm absolute left-1/2 -translate-x-1/2">
                     <h1 className="text-sm font-bold text-slate-800 tracking-wide uppercase">
-                        FOOD
+                        RIDE
                     </h1>
                 </div>
             </div>
@@ -37,36 +37,36 @@ export default function FoodSearchPage() {
                     {/* Bot Greeting */}
                     <div className="flex items-center gap-2 self-start w-full mb-10 pl-2">
                         <span className="text-teal-700 font-bold text-sm">Poortal:</span>
-                        <span className="text-slate-700 text-sm">What are you craving?</span>
+                        <span className="text-slate-700 text-sm">Where to?</span>
                     </div>
 
-                    {/* Reservations Option */}
+                    {/* On Demand Option */}
                     <button
-                        onClick={() => navigate('/restaurants')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
-                        disabled={pending}
+                        disabled
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 opacity-50 cursor-not-allowed"
                     >
-                        <ConciergeBell className="h-12 w-12 mb-3 text-amber-500" strokeWidth={1.25} />
-                        <span className="text-lg font-medium text-slate-800">Reservations</span>
+                        <Zap className="h-12 w-12 mb-3 text-amber-400" strokeWidth={1.25} />
+                        <span className="text-lg font-medium text-slate-800">On Demand</span>
+                        <span className="text-[10px] text-slate-400 mt-1 font-medium">Coming soon</span>
                     </button>
 
-                    {/* Experiences Option */}
+                    {/* Scheduled Option */}
                     <button
-                        onClick={() => navigate('/food/experiences')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
-                        disabled={pending}
+                        disabled
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 opacity-50 cursor-not-allowed"
                     >
-                        <Sparkles className="h-12 w-12 mb-3 text-orange-400" strokeWidth={1.25} />
-                        <span className="text-lg font-medium text-slate-800">Experiences</span>
+                        <Clock className="h-12 w-12 mb-3 text-sky-500" strokeWidth={1.25} />
+                        <span className="text-lg font-medium text-slate-800">Scheduled</span>
+                        <span className="text-[10px] text-slate-400 mt-1 font-medium">Coming soon</span>
                     </button>
 
-                    {/* Delivery Option */}
+                    {/* Transfer Option */}
                     <button
                         disabled
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 opacity-50 cursor-not-allowed"
                     >
-                        <Bike className="h-12 w-12 mb-3 text-slate-400" strokeWidth={1.25} />
-                        <span className="text-lg font-medium text-slate-400">Delivery</span>
+                        <Car className="h-12 w-12 mb-3 text-teal-600" strokeWidth={1.25} />
+                        <span className="text-lg font-medium text-slate-800">Transfer</span>
                         <span className="text-[10px] text-slate-400 mt-1 font-medium">Coming soon</span>
                     </button>
 
