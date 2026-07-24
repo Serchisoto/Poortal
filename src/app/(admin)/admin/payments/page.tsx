@@ -1,12 +1,6 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   DollarSign,
@@ -35,10 +29,7 @@ const STATUS_LABELS: Record<string, string> = {
   partially_refunded: 'Reemb. parcial',
 }
 
-const STATUS_VARIANT: Record<
-  string,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
+const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   pending: 'outline',
   succeeded: 'default',
   failed: 'destructive',
@@ -53,27 +44,16 @@ export default async function AdminPaymentsPage() {
   const [monthlyCharges, monthlyFees, monthlyTransfers, recentPayments] =
     await Promise.all([
       prisma.payments.aggregate({
-        where: {
-          type: 'charge',
-          status: 'succeeded',
-          created_at: { gte: startOfMonth },
-        },
+        where: { type: 'charge', status: 'succeeded', created_at: { gte: startOfMonth } },
         _sum: { amount: true },
         _count: { id: true },
       }),
       prisma.payments.aggregate({
-        where: {
-          type: 'platform_fee',
-          status: 'succeeded',
-          created_at: { gte: startOfMonth },
-        },
+        where: { type: 'platform_fee', status: 'succeeded', created_at: { gte: startOfMonth } },
         _sum: { amount: true },
       }),
       prisma.payments.aggregate({
-        where: {
-          type: 'transfer',
-          created_at: { gte: startOfMonth },
-        },
+        where: { type: 'transfer', created_at: { gte: startOfMonth } },
         _sum: { amount: true },
         _count: { id: true },
       }),
@@ -86,9 +66,7 @@ export default async function AdminPaymentsPage() {
             },
           },
           booking_items: {
-            select: {
-              provider_profiles: { select: { business_name: true } },
-            },
+            select: { provider_profiles: { select: { business_name: true } } },
           },
         },
         orderBy: { created_at: 'desc' },
@@ -103,124 +81,85 @@ export default async function AdminPaymentsPage() {
   const transferCount = monthlyTransfers._count.id
 
   const summaryCards = [
-    {
-      title: 'Ingresos totales',
-      value: `$${totalRevenue.toLocaleString('es-MX')} MXN`,
-      description: 'Cobros exitosos este mes',
-      icon: DollarSign,
-    },
-    {
-      title: 'Comision POORTAL (15%)',
-      value: `$${totalFee.toLocaleString('es-MX')} MXN`,
-      description: 'Este mes',
-      icon: TrendingUp,
-    },
-    {
-      title: 'Pagos procesados',
-      value: processedCount.toString(),
-      description: 'Cobros exitosos este mes',
-      icon: CreditCard,
-    },
-    {
-      title: 'Pagos a proveedores',
-      value: `$${totalTransfers.toLocaleString('es-MX')} MXN`,
-      description: `${transferCount} transferencias este mes`,
-      icon: ArrowDownToLine,
-    },
+    { title: 'Ingresos totales', value: `$${totalRevenue.toLocaleString('es-MX')}`, sub: 'Cobros exitosos este mes', icon: DollarSign },
+    { title: 'Comision POORTAL', value: `$${totalFee.toLocaleString('es-MX')}`, sub: '15% — este mes', icon: TrendingUp },
+    { title: 'Pagos procesados', value: processedCount.toString(), sub: 'Cobros exitosos este mes', icon: CreditCard },
+    { title: 'A proveedores', value: `$${totalTransfers.toLocaleString('es-MX')}`, sub: `${transferCount} transferencias`, icon: ArrowDownToLine },
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Pagos de la Plataforma
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Resumen de transacciones, comisiones y pagos a proveedores
+        <h1 className="text-xl font-bold tracking-tight">Pagos</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          Transacciones, comisiones y pagos a proveedores
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Summary cards — 2 col on mobile */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {summaryCards.map((card) => (
-          <Card key={card.title}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {card.title}
-              </CardTitle>
-              <card.icon className="h-5 w-5 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{card.value}</div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {card.description}
-              </p>
-            </CardContent>
-          </Card>
+          <div key={card.title} className="rounded-2xl border bg-card p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="rounded-xl bg-primary/10 p-2">
+                <card.icon className="h-4 w-4 text-primary" strokeWidth={2} />
+              </div>
+            </div>
+            <p className="text-xl font-bold leading-none">{card.value}</p>
+            <p className="mt-1 text-xs font-semibold leading-tight text-foreground">{card.title}</p>
+            <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">{card.sub}</p>
+          </div>
         ))}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Historial de transacciones</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <div className="grid grid-cols-6 gap-4 border-b bg-muted/50 px-4 py-3 text-sm font-medium text-muted-foreground">
-              <div>Reserva</div>
-              <div>Turista</div>
-              <div>Proveedor</div>
-              <div>Tipo</div>
-              <div>Monto</div>
-              <div>Estado</div>
-            </div>
-            {recentPayments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <CreditCard className="h-12 w-12 text-muted-foreground/50" />
-                <h3 className="mt-4 text-lg font-medium">
-                  Sin transacciones
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Las transacciones apareceran aqui
-                </p>
-              </div>
-            ) : (
-              <div className="divide-y">
-                {recentPayments.map((payment) => (
-                  <div
-                    key={payment.id}
-                    className="grid grid-cols-6 gap-4 px-4 py-3 text-sm"
-                  >
-                    <div className="font-mono text-xs">
-                      {payment.bookings.booking_number}
-                    </div>
-                    <div className="truncate">
-                      {payment.bookings.profiles.full_name ??
-                        payment.bookings.profiles.email}
-                    </div>
-                    <div className="truncate text-muted-foreground">
-                      {payment.booking_items?.provider_profiles.business_name ??
-                        '—'}
-                    </div>
-                    <div className="text-muted-foreground">
-                      {TYPE_LABELS[payment.type] ?? payment.type}
-                    </div>
-                    <div className="font-medium">
-                      ${Number(payment.amount).toLocaleString('es-MX')}
-                    </div>
-                    <div>
-                      <Badge
-                        variant={STATUS_VARIANT[payment.status] ?? 'outline'}
-                      >
-                        {STATUS_LABELS[payment.status] ?? payment.status}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Transaction list */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          Historial de transacciones
+        </h2>
+        {recentPayments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border py-16 text-center">
+            <CreditCard className="h-10 w-10 text-muted-foreground/40" />
+            <p className="mt-3 text-sm font-medium text-muted-foreground">Sin transacciones</p>
           </div>
-        </CardContent>
-      </Card>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {recentPayments.map((payment) => (
+              <div key={payment.id} className="rounded-2xl border bg-card p-4 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs font-bold text-muted-foreground">
+                    {payment.bookings.booking_number}
+                  </span>
+                  <Badge variant={STATUS_VARIANT[payment.status] ?? 'outline'} className="text-xs">
+                    {STATUS_LABELS[payment.status] ?? payment.status}
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate">
+                      {payment.bookings.profiles.full_name ?? payment.bookings.profiles.email}
+                    </p>
+                    {payment.booking_items?.provider_profiles.business_name && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {payment.booking_items.provider_profiles.business_name}
+                      </p>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-bold">
+                      ${Number(payment.amount).toLocaleString('es-MX')} MXN
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {TYPE_LABELS[payment.type] ?? payment.type}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   )
 }

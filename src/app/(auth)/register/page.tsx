@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { z } from 'zod'
 import { authClient } from '@/lib/auth-client'
@@ -9,31 +9,29 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 
 const registerSchema = z
   .object({
     full_name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-    email: z.string().email('Ingresa un correo electrónico válido'),
+    email: z.string().email('Ingresa un correo electronico valido'),
     phone: z
       .string()
       .refine(
         (val) => val === '' || /^[+\d\s\-()]{10,}$/.test(val),
-        'Formato de teléfono inválido (mínimo 10 dígitos)'
+        'Formato de telefono invalido (minimo 10 digitos)'
       )
       .optional()
       .or(z.literal('')),
     password: z
       .string()
-      .min(8, 'La contraseña debe tener al menos 8 caracteres')
-      .regex(/[A-Z]/, 'Debe contener al menos una letra mayúscula')
-      .regex(/[0-9]/, 'Debe contener al menos un número'),
+      .min(8, 'La contrasena debe tener al menos 8 caracteres')
+      .regex(/[A-Z]/, 'Debe contener al menos una mayuscula')
+      .regex(/[0-9]/, 'Debe contener al menos un numero'),
     confirm_password: z.string(),
-    accept_terms: z.literal(true, { message: 'Debes aceptar los términos y condiciones' }),
+    accept_terms: z.literal(true, { message: 'Debes aceptar los terminos y condiciones' }),
   })
-  .refine((data) => data.password === data.confirm_password, {
-    message: 'Las contraseñas no coinciden',
+  .refine((d) => d.password === d.confirm_password, {
+    message: 'Las contrasenas no coinciden',
     path: ['confirm_password'],
   })
 
@@ -49,13 +47,12 @@ export default function RegisterPage() {
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null
-  return <p className="text-xs text-destructive">{message}</p>
+  return <p className="mt-1 text-xs text-destructive">{message}</p>
 }
 
 function RegisterForm() {
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') || ''
-  const router = useRouter()
+  const redirectTo = searchParams.get('redirectTo') || '/'
 
   const [globalError, setGlobalError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -80,10 +77,10 @@ function RegisterForm() {
       accept_terms: acceptTerms as true,
     }
 
-    const result = registerSchema.safeParse(raw)
-    if (!result.success) {
+    const parsed = registerSchema.safeParse(raw)
+    if (!parsed.success) {
       const errors: FieldErrors = {}
-      for (const issue of result.error.issues) {
+      for (const issue of parsed.error.issues) {
         const field = issue.path[0] as keyof FieldErrors
         if (field && !errors[field]) errors[field] = issue.message
       }
@@ -94,159 +91,174 @@ function RegisterForm() {
     setIsPending(true)
 
     const { data, error: authErr } = await authClient.signUp.email({
-      email: result.data.email,
-      password: result.data.password,
-      name: result.data.full_name,
+      email: parsed.data.email,
+      password: parsed.data.password,
+      name: parsed.data.full_name,
     })
 
     if (authErr) {
       setGlobalError(
-        authErr.message?.includes('already')
-          ? 'Este correo ya está registrado. Intenta iniciar sesión.'
+        authErr.message?.toLowerCase().includes('already')
+          ? 'Este correo ya esta registrado. Intenta iniciar sesion.'
           : 'Error al crear la cuenta. Intenta de nuevo.'
       )
       setIsPending(false)
       return
     }
 
+    // Create the profile row. The session cookie is now set by signUp, so we
+    // pass the userId directly — the API route also accepts it from the session.
     if (data?.user?.id) {
       await fetch('/api/auth/create-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           userId: data.user.id,
-          full_name: result.data.full_name,
-          email: result.data.email,
-          phone: result.data.phone || null,
+          full_name: parsed.data.full_name,
+          email: parsed.data.email,
+          phone: parsed.data.phone || null,
         }),
+      }).catch(() => {
+        // Profile creation failure is non-fatal — it will be retried on next login
       })
     }
 
-    router.push(redirectTo || '/')
+    // Full page navigation forces the browser to send the new session cookie,
+    // so all server components (layouts, auth guards) see the session immediately.
+    window.location.href = redirectTo
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Crear Cuenta</CardTitle>
-          <CardDescription>
-            Regístrate en POORTAL para reservar experiencias increíbles
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {globalError && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {globalError}
-            </div>
-          )}
+    <div className="flex min-h-dvh flex-col">
+      {/* Brand header */}
+      <div className="bg-primary px-6 pb-8 pt-12 text-primary-foreground">
+        <Link href="/" className="mb-6 block">
+          <span className="text-2xl font-black tracking-tight">POORTAL</span>
+        </Link>
+        <h1 className="text-2xl font-bold leading-tight">Crea tu cuenta</h1>
+        <p className="mt-1 text-sm text-primary-foreground/70">
+          Reserva experiencias increibles en Mexico
+        </p>
+      </div>
 
-          <div className="relative">
-            <Separator />
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-              Regístrate con email
-            </span>
+      {/* Form card */}
+      <div className="-mt-4 flex-1 rounded-t-3xl bg-background px-6 pb-10 pt-7 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+        {globalError && (
+          <div className="mb-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
+            {globalError}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <div className="space-y-1.5">
+            <Label htmlFor="full_name">Nombre completo</Label>
+            <Input
+              id="full_name"
+              name="full_name"
+              type="text"
+              placeholder="Tu nombre completo"
+              autoComplete="name"
+              className="h-12"
+            />
+            <FieldError message={fieldErrors.full_name} />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            <div className="space-y-1">
-              <Label htmlFor="full_name">Nombre completo *</Label>
-              <Input
-                id="full_name"
-                name="full_name"
-                type="text"
-                placeholder="Tu nombre completo"
-                autoComplete="name"
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Correo electronico</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tu@email.com"
+              autoComplete="email"
+              className="h-12"
+            />
+            <FieldError message={fieldErrors.email} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="phone">
+              Telefono <span className="text-muted-foreground">(opcional)</span>
+            </Label>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="+52 624 123 4567"
+              autoComplete="tel"
+              className="h-12"
+            />
+            <FieldError message={fieldErrors.phone} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="password">Contrasena</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Minimo 8 caracteres"
+              autoComplete="new-password"
+              className="h-12"
+            />
+            <FieldError message={fieldErrors.password} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="confirm_password">Confirmar contrasena</Label>
+            <Input
+              id="confirm_password"
+              name="confirm_password"
+              type="password"
+              placeholder="Repite tu contrasena"
+              autoComplete="new-password"
+              className="h-12"
+            />
+            <FieldError message={fieldErrors.confirm_password} />
+          </div>
+
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="accept_terms"
+                checked={acceptTerms}
+                onCheckedChange={(v) => setAcceptTerms(v === true)}
+                className="mt-0.5"
               />
-              <FieldError message={fieldErrors.full_name} />
+              <Label htmlFor="accept_terms" className="text-sm leading-relaxed font-normal">
+                Acepto los{' '}
+                <Link href="#" className="font-medium text-primary hover:underline">
+                  Terminos y Condiciones
+                </Link>{' '}
+                y la{' '}
+                <Link href="#" className="font-medium text-primary hover:underline">
+                  Politica de Privacidad
+                </Link>
+              </Label>
             </div>
+            <FieldError message={fieldErrors.accept_terms} />
+          </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="email">Correo electrónico *</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="tu@email.com"
-                autoComplete="email"
-              />
-              <FieldError message={fieldErrors.email} />
-            </div>
+          <Button
+            type="submit"
+            className="h-12 w-full text-base font-semibold"
+            disabled={isPending}
+          >
+            {isPending ? 'Creando cuenta...' : 'Crear cuenta'}
+          </Button>
+        </form>
 
-            <div className="space-y-1">
-              <Label htmlFor="phone">Teléfono (opcional)</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="+52 624 123 4567"
-                autoComplete="tel"
-              />
-              <FieldError message={fieldErrors.phone} />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="password">Contraseña *</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Mínimo 8 caracteres"
-                autoComplete="new-password"
-              />
-              <FieldError message={fieldErrors.password} />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="confirm_password">Confirmar contraseña *</Label>
-              <Input
-                id="confirm_password"
-                name="confirm_password"
-                type="password"
-                placeholder="Repite tu contraseña"
-                autoComplete="new-password"
-              />
-              <FieldError message={fieldErrors.confirm_password} />
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-start space-x-2">
-                <Checkbox
-                  id="accept_terms"
-                  checked={acceptTerms}
-                  onCheckedChange={(checked) => setAcceptTerms(checked === true)}
-                />
-                <Label htmlFor="accept_terms" className="text-sm leading-tight">
-                  Acepto los{' '}
-                  <Link href="#" className="text-primary hover:underline">
-                    Términos y Condiciones
-                  </Link>{' '}
-                  y la{' '}
-                  <Link href="#" className="text-primary hover:underline">
-                    Política de Privacidad
-                  </Link>
-                </Label>
-              </div>
-              <FieldError message={fieldErrors.accept_terms} />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? 'Creando cuenta...' : 'Crear Cuenta'}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-muted-foreground">
-            ¿Ya tienes cuenta?{' '}
-            <Link
-              href={`/login${redirectTo ? `?redirectTo=${redirectTo}` : ''}`}
-              className="font-medium text-primary hover:underline"
-            >
-              Iniciar sesión
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Ya tienes cuenta?{' '}
+          <Link
+            href={`/login${redirectTo !== '/' ? `?redirectTo=${redirectTo}` : ''}`}
+            className="font-semibold text-primary hover:underline"
+          >
+            Iniciar sesion
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

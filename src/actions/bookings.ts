@@ -3,6 +3,7 @@
 import { auth } from '@/lib/auth'
 import { headers, cookies } from 'next/headers'
 import prisma from '@/lib/prisma'
+import { sendBookingConfirmation } from '@/lib/email'
 
 interface CartItem {
   experienceId: string
@@ -144,6 +145,30 @@ export async function createBookingFromCart({ items, guestEmail, guestName }: Cr
       path: '/',
       maxAge: 60 * 60 * 24 * 365,
       sameSite: 'lax',
+    })
+  }
+
+  // Send confirmation email
+  const toEmail = session?.user?.email ?? guestEmail?.trim().toLowerCase() ?? ''
+  const toName = session?.user?.name ?? guestName?.trim() ?? null
+
+  if (toEmail && items.length > 0) {
+    // Look up the first experience title for the subject line
+    const firstExp = await prisma.experiences.findUnique({
+      where: { id: items[0].experienceId },
+      select: { title: true },
+    })
+
+    await sendBookingConfirmation({
+      toEmail,
+      toName,
+      bookingNumber,
+      experienceTitle: firstExp?.title ?? 'tu experiencia',
+      serviceDate: items[0].serviceDate,
+      serviceTime: items[0].serviceTime,
+      people: items[0].quantity,
+      totalAmount: total,
+      currency: items[0].currency,
     })
   }
 

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 
-type Category = {
+type CategoryDef = {
     name: string
     label: string
     slug: string
@@ -22,7 +22,7 @@ type Category = {
     span: string
 }
 
-const categories: Category[] = [
+const ALL_CATEGORIES: CategoryDef[] = [
     // Row 1 (3 items)
     { name: 'tours',    label: 'Tours',    slug: 'tours',    icon: Bus,            span: 'col-span-2' },
     { name: 'ride',     label: 'Ride',     slug: 'ride',     icon: Car,            span: 'col-span-2' },
@@ -39,12 +39,22 @@ const categories: Category[] = [
     { name: 'wellness', label: 'Wellness', slug: 'wellness', icon: Sparkles,       span: 'col-span-3' },
 ]
 
-export function CategoryGrid() {
+interface CategoryGridProps {
+    /** If provided, only show categories whose slug is in this set */
+    enabledSlugs?: string[]
+}
+
+export function CategoryGrid({ enabledSlugs }: CategoryGridProps) {
+    const categories = enabledSlugs
+        ? ALL_CATEGORIES.filter((c) => enabledSlugs.includes(c.slug))
+        : ALL_CATEGORIES
+
     return (
         <div className="grid grid-cols-6 gap-2.5 px-4 py-4">
             {categories.map((category) => {
                 let href = `${ROUTES.explore}?category=${category.slug}`
                 if (category.slug === 'tours')    href = ROUTES.tours
+                if (category.slug === 'ride')     href = '/ride'
                 if (category.slug === 'party')    href = ROUTES.party
                 if (category.slug === 'sea')      href = ROUTES.sea
                 if (category.slug === 'culture')  href = ROUTES.culture

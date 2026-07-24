@@ -1,24 +1,12 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { AlertTriangle, Ban } from 'lucide-react'
+import { AlertTriangle, Ban, User, Building2, CalendarDays } from 'lucide-react'
 import prisma from '@/lib/prisma'
 
 export const metadata: Metadata = {
   title: 'Disputas y Reclamaciones',
-}
-
-const POLICY_LABELS: Record<string, string> = {
-  flexible: 'Flexible',
-  moderate: 'Moderada',
-  strict: 'Estricta',
 }
 
 export default async function AdminDisputesPage() {
@@ -48,145 +36,117 @@ export default async function AdminDisputesPage() {
   ])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Disputas y Reclamaciones
-        </h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-xl font-bold tracking-tight">Disputas</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Gestiona las disputas entre turistas y proveedores
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge variant="destructive">
-          Disputas activas: {disputedBookings.length}
-        </Badge>
-        <Badge variant="outline">
-          Cancelaciones totales: {recentCancellations.length}
-        </Badge>
+      {/* Summary badges */}
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="destructive">Disputas activas: {disputedBookings.length}</Badge>
+        <Badge variant="outline">Cancelaciones: {recentCancellations.length}</Badge>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Disputas activas</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <div className="grid grid-cols-5 gap-4 border-b bg-muted/50 px-4 py-3 text-sm font-medium text-muted-foreground">
-              <div>Reserva</div>
-              <div>Turista</div>
-              <div>Proveedor</div>
-              <div>Monto</div>
-              <div>Fecha</div>
-            </div>
-            {disputedBookings.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <AlertTriangle className="h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Sin disputas activas
-                </p>
-              </div>
-            ) : (
-              <div className="divide-y">
-                {disputedBookings.map((booking) => {
-                  const item = booking.booking_items[0]
-                  return (
-                    <div
-                      key={booking.id}
-                      className="grid grid-cols-5 gap-4 px-4 py-3 text-sm"
-                    >
-                      <div className="font-mono font-medium text-xs">
-                        {booking.booking_number}
-                      </div>
-                      <div>
-                        <p className="truncate font-medium">
-                          {booking.profiles.full_name ?? '—'}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {booking.profiles.email}
-                        </p>
-                      </div>
-                      <div className="truncate text-muted-foreground">
-                        {item?.provider_profiles.business_name ?? '—'}
-                      </div>
-                      <div className="font-medium">
-                        ${Number(booking.total_amount).toLocaleString('es-MX')}{' '}
-                        {booking.currency}
-                      </div>
-                      <div className="text-muted-foreground">
-                        {new Date(booking.created_at).toLocaleDateString(
-                          'es-MX'
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+      {/* Disputed bookings */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          Disputas activas
+        </h2>
+        {disputedBookings.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border py-12 text-center">
+            <AlertTriangle className="h-9 w-9 text-muted-foreground/40" />
+            <p className="mt-3 text-sm text-muted-foreground">Sin disputas activas</p>
           </div>
-        </CardContent>
-      </Card>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {disputedBookings.map((booking) => {
+              const item = booking.booking_items[0]
+              return (
+                <div key={booking.id} className="rounded-2xl border bg-card p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs font-bold text-muted-foreground">
+                      {booking.booking_number}
+                    </span>
+                    <Badge variant="destructive" className="text-xs">Disputada</Badge>
+                  </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Cancelaciones recientes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <div className="grid grid-cols-5 gap-4 border-b bg-muted/50 px-4 py-3 text-sm font-medium text-muted-foreground">
-              <div>Reserva</div>
-              <div>Cancelado por</div>
-              <div>Motivo</div>
-              <div>Reembolso</div>
-              <div>Fecha</div>
-            </div>
-            {recentCancellations.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Ban className="h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Sin cancelaciones registradas
-                </p>
-              </div>
-            ) : (
-              <div className="divide-y">
-                {recentCancellations.map((c) => (
-                  <div
-                    key={c.id}
-                    className="grid grid-cols-5 gap-4 px-4 py-3 text-sm"
-                  >
-                    <div className="font-mono text-xs">
-                      {c.bookings.booking_number}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Turista</p>
+                      <p className="text-sm font-semibold leading-tight truncate">{booking.profiles.full_name ?? '—'}</p>
+                      <p className="text-xs text-muted-foreground truncate">{booking.profiles.email}</p>
                     </div>
                     <div>
-                      <p className="truncate">
-                        {c.profiles?.full_name ?? '—'}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {c.profiles?.email ?? c.cancelled_by_type}
-                      </p>
-                    </div>
-                    <div className="truncate text-muted-foreground">
-                      {c.reason ?? '—'}
-                    </div>
-                    <div>
-                      <span className="font-medium">
-                        {c.refund_percentage}%
-                      </span>
-                      <span className="ml-1 text-muted-foreground">
-                        (${Number(c.refund_amount).toLocaleString('es-MX')})
-                      </span>
-                    </div>
-                    <div className="text-muted-foreground">
-                      {new Date(c.created_at).toLocaleDateString('es-MX')}
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">Proveedor</p>
+                      <p className="text-sm font-semibold leading-tight truncate">{item?.provider_profiles.business_name ?? '—'}</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-bold text-foreground">
+                      ${Number(booking.total_amount).toLocaleString('es-MX')} {booking.currency}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <CalendarDays className="h-3 w-3" />
+                      {new Date(booking.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </section>
+
+      {/* Cancellations */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          Cancelaciones recientes
+        </h2>
+        {recentCancellations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border py-12 text-center">
+            <Ban className="h-9 w-9 text-muted-foreground/40" />
+            <p className="mt-3 text-sm text-muted-foreground">Sin cancelaciones registradas</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {recentCancellations.map((c) => (
+              <div key={c.id} className="rounded-2xl border bg-card p-4 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs font-bold text-muted-foreground">
+                    {c.bookings.booking_number}
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <CalendarDays className="h-3 w-3" />
+                    {new Date(c.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <span className="text-sm font-semibold truncate">{c.profiles?.full_name ?? c.cancelled_by_type}</span>
+                </div>
+
+                {c.reason && (
+                  <p className="text-xs text-muted-foreground line-clamp-2">{c.reason}</p>
+                )}
+
+                <div className="flex items-center gap-2 text-sm">
+                  <Badge variant="outline">
+                    {c.refund_percentage}% reembolso
+                  </Badge>
+                  <span className="text-muted-foreground text-xs">
+                    ${Number(c.refund_amount).toLocaleString('es-MX')} MXN
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   )
 }
