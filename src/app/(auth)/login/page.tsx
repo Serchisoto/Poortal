@@ -1,14 +1,12 @@
 "use client"
 
 import { Suspense, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 
 export default function LoginPage() {
   return (
@@ -20,10 +18,8 @@ export default function LoginPage() {
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  // Support both ?redirectTo= and ?next= (used in different parts of the app)
   const redirectTo = searchParams.get('redirectTo') || searchParams.get('next') || ''
   const authError = searchParams.get('error')
-  const router = useRouter()
 
   const [error, setError] = useState<string | null>(null)
   const [isPending, setIsPending] = useState(false)
@@ -52,97 +48,94 @@ function LoginForm() {
       return
     }
 
-    // Flush RSC cache so server components (admin layout auth check) see the new session
-    router.refresh()
-
-    // Determine destination
+    // Full page navigation commits the session cookie before the server renders
+    // the next route, avoiding the "session not found" redirect loop.
     const role = (result?.data?.user as { role?: string } | undefined)?.role
 
     if (redirectTo) {
-      router.push(redirectTo)
+      window.location.href = redirectTo
       return
     }
 
-    if (role === 'admin') router.push('/admin/dashboard')
-    else if (role === 'provider') router.push('/provider/dashboard')
-    else router.push('/')
+    if (role === 'admin') window.location.href = '/admin/dashboard'
+    else if (role === 'provider') window.location.href = '/provider/dashboard'
+    else window.location.href = '/'
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Iniciar Sesion</CardTitle>
-          <CardDescription>
-            Ingresa a tu cuenta de POORTAL
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {(error || authError) && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error || 'Error de autenticacion. Intenta de nuevo.'}
-            </div>
-          )}
+    <div className="flex min-h-dvh flex-col">
+      {/* Brand header */}
+      <div className="bg-primary px-6 pb-8 pt-12 text-primary-foreground">
+        <Link href="/" className="mb-6 block">
+          <span className="text-2xl font-black tracking-tight">POORTAL</span>
+        </Link>
+        <h1 className="text-2xl font-bold leading-tight">Bienvenido de vuelta</h1>
+        <p className="mt-1 text-sm text-primary-foreground/70">
+          Inicia sesion para continuar
+        </p>
+      </div>
 
-          <div className="relative">
-            <Separator />
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-              Inicia sesion con email
-            </span>
+      {/* Form card */}
+      <div className="-mt-4 flex-1 rounded-t-3xl bg-background px-6 pb-10 pt-7 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+        {(error || authError) && (
+          <div className="mb-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
+            {error || 'Error de autenticacion. Intenta de nuevo.'}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Correo electronico</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tu@email.com"
+              required
+              autoComplete="email"
+              className="h-12"
+              suppressHydrationWarning
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
-            <div className="space-y-2">
-              <Label htmlFor="email">Correo electronico</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="tu@email.com"
-                required
-                autoComplete="email"
-                suppressHydrationWarning
-              />
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Contrasena</Label>
+              <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
+                Olvidaste tu contrasena?
+              </Link>
             </div>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Tu contrasena"
+              required
+              autoComplete="current-password"
+              className="h-12"
+              suppressHydrationWarning
+            />
+          </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Contrasena</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-primary hover:underline"
-                >
-                  Olvidaste tu contrasena?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Tu contrasena"
-                required
-                autoComplete="current-password"
-                suppressHydrationWarning
-              />
-            </div>
+          <Button
+            type="submit"
+            className="h-12 w-full text-base font-semibold"
+            disabled={isPending}
+          >
+            {isPending ? 'Ingresando...' : 'Iniciar sesion'}
+          </Button>
+        </form>
 
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? 'Ingresando...' : 'Iniciar Sesion'}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-muted-foreground">
-            No tienes cuenta?{' '}
-            <Link
-              href={`/register${redirectTo ? `?redirectTo=${redirectTo}` : ''}`}
-              className="font-medium text-primary hover:underline"
-            >
-              Crear cuenta
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          No tienes cuenta?{' '}
+          <Link
+            href={`/register${redirectTo ? `?redirectTo=${redirectTo}` : ''}`}
+            className="font-semibold text-primary hover:underline"
+          >
+            Crear cuenta
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }
