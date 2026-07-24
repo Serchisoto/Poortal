@@ -31,7 +31,6 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/screenshots/home.png',
         sizes: '390x844',
         type: 'image/png',
-        // @ts-expect-error — form_factor is valid in PWA spec but not yet in TS types
         form_factor: 'narrow',
         label: 'Pantalla principal – Cancún',
       },
