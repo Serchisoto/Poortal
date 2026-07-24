@@ -47,17 +47,20 @@ export default async function DestinationPage({
           ) : (
             <div className="absolute inset-0 bg-primary/20" />
           )}
-          {/* Gradient — darker overall for strong contrast on text */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/70" />
+          {/* Gradient — strong centre scrim for contrast */}
+          <div className="absolute inset-0 bg-black/40" />
 
-          {/* Text centred at the top */}
-          <div className="absolute top-0 left-0 right-0 flex flex-col items-center pt-6 px-4 text-center">
-            <p className="text-white/80 text-[9px] font-bold tracking-[0.28em] uppercase drop-shadow mb-1">
+          {/* Text — vertically and horizontally centred */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+            <p className="text-white/70 text-[11px] font-semibold tracking-[0.3em] uppercase drop-shadow mb-2">
               WELCOME TO
             </p>
-            <h1 className="text-[2rem] font-extrabold text-white leading-tight drop-shadow-lg tracking-tight">
+            <h1 className="text-[2.6rem] font-extrabold text-white leading-none drop-shadow-lg tracking-tight text-balance">
               {destination.name}
             </h1>
+            <p className="text-white/55 text-[10px] font-medium tracking-[0.22em] uppercase mt-2 drop-shadow">
+              {destination.country}
+            </p>
           </div>
         </div>
 
