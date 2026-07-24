@@ -85,7 +85,8 @@ function TourCheckoutContent() {
         return
       }
 
-      router.push(`/success?booking=${result.bookingNumber}`)
+      const bookingNumber = 'bookingNumber' in result ? result.bookingNumber : result.bookingId
+      router.push(`/success?booking=${bookingNumber}`)
     } catch (e) {
       console.error('[checkout] pay now failed:', e)
       setError('Hubo un problema al procesar tu reserva. Intenta de nuevo.')
