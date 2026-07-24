@@ -27,18 +27,18 @@ export function SearchBar({ defaultValue = '', placeholder, className }: SearchB
 
   return (
     <form onSubmit={handleSearch} className={className}>
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <div className="relative flex items-center bg-background rounded-2xl shadow-xl border border-border/50 overflow-hidden h-12">
+        <Search className="absolute left-4 h-4 w-4 text-muted-foreground/60 pointer-events-none" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder || 'Buscar experiencias...'}
-          className="pl-10 pr-24"
+          className="h-full border-0 shadow-none bg-transparent pl-11 pr-24 text-sm focus-visible:ring-0"
         />
         <Button
           type="submit"
           size="sm"
-          className="absolute right-1.5 top-1/2 -translate-y-1/2"
+          className="absolute right-1.5 rounded-xl text-xs font-semibold px-4 h-8"
         >
           Buscar
         </Button>

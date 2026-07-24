@@ -34,44 +34,47 @@ export default async function DestinationPage({
       <SetActiveDestination slug={destination.slug} />
 
       {/* Hero — full bleed, tall, dramatic */}
-      <div className="relative w-full h-[58vw] min-h-[220px] max-h-[340px] bg-foreground/10 overflow-hidden">
-        {destination.cover_image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={destination.cover_image_url}
-            alt={destination.name}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        ) : (
-          /* Placeholder pattern when no cover is set */
-          <div className="absolute inset-0 bg-primary/20" />
-        )}
-        {/* Stronger gradient for legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/75" />
+      <div className="relative w-full overflow-hidden" style={{ paddingBottom: '58%', minHeight: 220, maxHeight: 360 }}>
+        <div className="absolute inset-0">
+          {destination.cover_image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={destination.cover_image_url}
+              alt={destination.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-primary/20" />
+          )}
+          {/* Gradient for legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/80" />
+        </div>
 
-        {/* Text anchored to bottom-left */}
-        <div className="absolute bottom-0 left-0 right-0 px-5 pb-14">
-          <p className="text-white/70 text-xs font-semibold tracking-[0.18em] uppercase mb-1">
+        {/* Text — inside hero, above search */}
+        <div className="absolute bottom-16 left-0 right-0 px-5">
+          <p className="text-white/70 text-[10px] font-semibold tracking-[0.2em] uppercase mb-0.5">
             {destination.country}
           </p>
-          <h1 className="text-[1.85rem] font-bold text-white leading-tight text-balance drop-shadow">
+          <h1 className="text-[1.75rem] font-bold text-white leading-tight text-balance drop-shadow-sm">
             {destination.name}
           </h1>
           {destination.description && (
-            <p className="text-white/70 text-sm mt-1 line-clamp-2 leading-snug">
+            <p className="text-white/60 text-xs mt-1 line-clamp-2 leading-snug">
               {destination.description}
             </p>
           )}
         </div>
+
+        {/* Search bar — anchored to hero bottom, half-overlapping */}
+        <div className="absolute bottom-0 left-0 right-0 translate-y-1/2 px-4 pr-5 z-10">
+          <SearchBar
+            placeholder="Buscar experiencias..."
+          />
+        </div>
       </div>
 
-      {/* Floating search bar — overlaps hero bottom */}
-      <div className="mx-auto w-full max-w-md md:max-w-xl lg:max-w-2xl px-4 md:px-4 -mt-6 relative z-10 mb-5">
-        <SearchBar
-          placeholder="Buscar experiencias..."
-          className="shadow-xl rounded-2xl overflow-hidden border border-border/60"
-        />
-      </div>
+      {/* Spacer so content clears the overlapping search bar */}
+      <div className="h-8" />
 
       {/* Categories */}
       <main className="mx-auto w-full max-w-md md:max-w-xl lg:max-w-2xl">
