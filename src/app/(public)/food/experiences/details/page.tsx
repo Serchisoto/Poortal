@@ -41,7 +41,7 @@ export default function FoodExperienceDetailsPage() {
 
                     {/* Bot Greeting */}
                     <div className="flex items-center gap-2 self-start w-full mb-10 pl-2">
-                        <span className="text-teal-700 font-bold text-sm">Poortal:</span>
+                        <span className="text-primary font-bold text-sm">Poortal:</span>
                         <span className="text-slate-700 text-sm">Let's look for your perfect fit.</span>
                     </div>
 
@@ -113,7 +113,7 @@ export default function FoodExperienceDetailsPage() {
                         <div className="flex flex-col w-32 items-center">
                             <label className="text-xs text-slate-500 mb-1">TimeFrame:</label>
                             <div className="relative w-full">
-                                <select className="w-full appearance-none border border-slate-300 rounded-md py-2 pl-3 pr-8 text-sm text-slate-700 bg-white shadow-sm outline-none focus:border-teal-500">
+                                <select className="w-full appearance-none border border-slate-300 rounded-md py-2 pl-3 pr-8 text-sm text-slate-700 bg-white shadow-sm outline-none focus:border-primary">
                                     <option>Morning</option>
                                     <option>Afternoon</option>
                                     <option>Evening</option>
@@ -129,7 +129,7 @@ export default function FoodExperienceDetailsPage() {
                             BUDGET (OPT)
                         </div>
                         <div className="relative w-28">
-                            <select className="w-full appearance-none border border-slate-300 rounded-md py-2 pl-4 pr-8 text-sm text-slate-700 bg-white shadow-sm outline-none focus:border-teal-500">
+                            <select className="w-full appearance-none border border-slate-300 rounded-md py-2 pl-4 pr-8 text-sm text-slate-700 bg-white shadow-sm outline-none focus:border-primary">
                                 <option>All</option>
                                 <option>$</option>
                                 <option>$$</option>

@@ -36,7 +36,7 @@ export default function RideSearchPage() {
 
                     {/* Bot Greeting */}
                     <div className="flex items-center gap-2 self-start w-full mb-10 pl-2">
-                        <span className="text-teal-700 font-bold text-sm">Poortal:</span>
+                        <span className="text-primary font-bold text-sm">Poortal:</span>
                         <span className="text-slate-700 text-sm">Where to?</span>
                     </div>
 
@@ -65,7 +65,7 @@ export default function RideSearchPage() {
                         disabled
                         className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 opacity-50 cursor-not-allowed"
                     >
-                        <Car className="h-12 w-12 mb-3 text-teal-600" strokeWidth={1.25} />
+                        <Car className="h-12 w-12 mb-3 text-primary" strokeWidth={1.25} />
                         <span className="text-lg font-medium text-slate-800">Transfer</span>
                         <span className="text-[10px] text-slate-400 mt-1 font-medium">Coming soon</span>
                     </button>

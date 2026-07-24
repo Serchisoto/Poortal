@@ -26,7 +26,7 @@ export function ShareButton({ title, description }: { title: string; description
     }
   }
   return (
-    <button onClick={handleShare} className="text-teal-600 active:scale-95 transition-transform">
+    <button onClick={handleShare}     className="text-primary active:scale-95 transition-transform">
       <Share2 className="h-4 w-4" />
     </button>
   )

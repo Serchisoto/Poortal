@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
-import { getStorage, GCS_BUCKET } from '@/lib/gcs'
+import { getStorage, GCS_BUCKET, GCS_BASE_URL } from '@/lib/gcs'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic']
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
@@ -13,16 +13,24 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { filename, contentType, experienceId, size } = body as {
+  const { filename, contentType, experienceId, destinationId, size } = body as {
     filename: string
     contentType: string
-    experienceId: string
+    experienceId?: string
+    destinationId?: string
     size?: number
   }
 
-  if (!filename || !contentType || !experienceId) {
+  if (!filename || !contentType) {
     return NextResponse.json(
-      { error: 'filename, contentType and experienceId are required' },
+      { error: 'filename and contentType are required' },
+      { status: 400 }
+    )
+  }
+
+  if (!experienceId && !destinationId) {
+    return NextResponse.json(
+      { error: 'experienceId or destinationId is required' },
       { status: 400 }
     )
   }
@@ -36,7 +44,14 @@ export async function POST(request: NextRequest) {
   }
 
   const ext = filename.split('.').pop()?.toLowerCase() ?? 'jpg'
-  const key = `experiences/${experienceId}/${crypto.randomUUID()}.${ext}`
+
+  // Build GCS key based on context
+  let key: string
+  if (destinationId) {
+    key = `destinations/${destinationId}/${crypto.randomUUID()}.${ext}`
+  } else {
+    key = `experiences/${experienceId}/${crypto.randomUUID()}.${ext}`
+  }
 
   const [presignedUrl] = await getStorage()
     .bucket(GCS_BUCKET)
@@ -48,5 +63,7 @@ export async function POST(request: NextRequest) {
       contentType,
     })
 
-  return NextResponse.json({ presignedUrl, key })
+  const publicUrl = `${GCS_BASE_URL}/${key}`
+
+  return NextResponse.json({ presignedUrl, key, publicUrl })
 }

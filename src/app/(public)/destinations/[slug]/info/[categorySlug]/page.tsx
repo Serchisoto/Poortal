@@ -79,7 +79,7 @@ export default async function DestinationCategoryInfoPage({
 
     const title = infoCategory ? infoCategory.title : dbCategory?.name || categorySlug
     const iconName = infoCategory ? infoCategory.icon : dbCategory?.icon || 'map-pin'
-    const color = infoCategory ? infoCategory.color : 'text-teal-700'
+    const color = infoCategory ? infoCategory.color : 'text-primary'
     const subtitle = infoCategory ? infoCategory.subtitle : 'Must see places'
 
     return (
@@ -100,7 +100,7 @@ export default async function DestinationCategoryInfoPage({
                     </h1>
                 </div>
 
-                <h2 className="text-teal-700 font-semibold mb-6 text-center">{subtitle}</h2>
+                <h2 className="text-primary font-semibold mb-6 text-center">{subtitle}</h2>
             </div>
 
             <main className="container mx-auto max-w-md md:max-w-3xl px-4">
@@ -142,10 +142,10 @@ export default async function DestinationCategoryInfoPage({
                                                 )}
                                             </div>
                                             <div className="flex items-center justify-between mt-2">
-                                                <span className="text-sm font-bold text-teal-700">{formattedPrice}</span>
+                                                <span className="text-sm font-bold text-primary">{formattedPrice}</span>
                                                 <Link
                                                     href={ROUTES.experience(exp.id)}
-                                                    className="flex items-center gap-1.5 bg-teal-700 text-white rounded-md px-4 py-1.5 text-xs font-semibold active:scale-95 transition-transform"
+                                                    className="flex items-center gap-1.5 bg-primary text-white rounded-md px-4 py-1.5 text-xs font-semibold active:scale-95 transition-transform"
                                                 >
                                                     <Ticket className="h-3.5 w-3.5" />
                                                     book

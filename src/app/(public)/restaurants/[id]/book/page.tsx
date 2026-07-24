@@ -63,21 +63,21 @@ export default function RestaurantBookingPage() {
                 <div className="flex gap-3 justify-center">
                     <button
                         onClick={() => setSelectedDate('15-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '15-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
+                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '15-jun' ? "bg-primary text-white" : "border border-slate-200 text-slate-600")}
                     >
                         <span className="text-[10px] font-bold tracking-wider uppercase">MON</span>
                         <span className="text-[10px]">15 Jun</span>
                     </button>
                     <button
                         onClick={() => setSelectedDate('16-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '16-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
+                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '16-jun' ? "bg-primary text-white" : "border border-slate-200 text-slate-600")}
                     >
                         <span className="text-[10px] uppercase font-medium">TUE</span>
                         <span className="text-[10px]">16 Jun</span>
                     </button>
                     <button
                         onClick={() => setSelectedDate('17-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '17-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
+                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '17-jun' ? "bg-primary text-white" : "border border-slate-200 text-slate-600")}
                     >
                         <span className="text-[10px] uppercase font-medium">WED</span>
                         <span className="text-[10px]">17 Jun</span>
@@ -86,7 +86,7 @@ export default function RestaurantBookingPage() {
 
                 {/* Time Selection */}
                 <div className="mt-6 flex justify-start">
-                    <div className="bg-teal-700 text-white text-xs font-semibold px-5 py-2.5 rounded-md">
+                    <div className="bg-primary text-white text-xs font-semibold px-5 py-2.5 rounded-md">
                         8:00 pm
                     </div>
                 </div>
@@ -95,13 +95,13 @@ export default function RestaurantBookingPage() {
                 <div className="mt-6 flex gap-2 w-full">
                     <button
                         onClick={() => setSelectedCategory('A')}
-                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'A' ? "bg-teal-700 text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
+                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'A' ? "bg-primary text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
                     >
                         CATEGORY A
                     </button>
                     <button
                         onClick={() => setSelectedCategory('B')}
-                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'B' ? "bg-teal-700 text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
+                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'B' ? "bg-primary text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
                     >
                         CATEGORY B
                     </button>
@@ -112,11 +112,11 @@ export default function RestaurantBookingPage() {
                     {tickets.map((ticket) => (
                         <div key={ticket.id} className="flex items-center justify-between p-4 rounded-full border border-slate-200 shadow-sm bg-white">
                             <div className="flex items-center gap-3">
-                                <div className="bg-teal-700 rounded-full h-5 w-5 flex items-center justify-center shrink-0">
+                                <div className="bg-primary rounded-full h-5 w-5 flex items-center justify-center shrink-0">
                                     <Info className="text-white h-3.5 w-3.5" strokeWidth={3} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <div className="text-[10px] text-teal-700 font-bold leading-tight">{ticket.name}</div>
+                                    <div className="text-[10px] text-primary font-bold leading-tight">{ticket.name}</div>
                                     <div className="text-[10px] text-slate-400 font-medium leading-tight mb-1">{ticket.type}</div>
                                     <div className="font-bold text-slate-900">$ {ticket.price.toFixed(2)}</div>
                                 </div>
@@ -134,7 +134,7 @@ export default function RestaurantBookingPage() {
                                 )}
                                 <button
                                     onClick={() => updateQty(ticket.id, 1)}
-                                    className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95"
+                                    className="bg-primary text-white rounded-full p-1.5 shadow-sm active:scale-95"
                                 >
                                     <Plus className="h-5 w-5" strokeWidth={3} />
                                 </button>
@@ -148,13 +148,13 @@ export default function RestaurantBookingPage() {
             <div className="fixed bottom-24 inset-x-0 mx-auto max-w-md px-6 z-40">
                 <div className="bg-white rounded-[2rem] border border-slate-200 shadow-lg px-6 py-4 flex items-center justify-between pointer-events-auto">
                     <div className="flex items-baseline gap-4">
-                        <span className="text-teal-700 font-bold tracking-widest text-lg">TOTAL</span>
+                        <span className="text-primary font-bold tracking-widest text-lg">TOTAL</span>
                         <span className="text-slate-900 font-bold text-lg">$ {totalAmount.toFixed(2)}</span>
                     </div>
                     <button
                         onClick={handleContinue}
                         disabled={totalAmount === 0}
-                        className={cn("flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none", totalAmount > 0 ? "bg-teal-700" : "bg-slate-300")}
+                        className={cn("flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none", totalAmount > 0 ? "bg-primary" : "bg-slate-300")}
                     >
                         continue
                         <ChevronRight className="h-4 w-4" strokeWidth={3} />

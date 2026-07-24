@@ -36,7 +36,7 @@ export default function SportsSearchPage() {
 
                     {/* Bot Greeting */}
                     <div className="flex items-center gap-2 self-start w-full mb-10 pl-2">
-                        <span className="text-teal-700 font-bold text-sm">Poortal:</span>
+                        <span className="text-primary font-bold text-sm">Poortal:</span>
                         <span className="text-slate-700 text-sm">Stand Up!</span>
                     </div>
 

@@ -7,6 +7,7 @@ import { getDestinationCategories } from '@/queries/destinations'
 import { DestinationCollectionsClient } from '@/components/admin/destination-collections-client'
 import { DestinationInfoClient } from '@/components/admin/destination-info-client'
 import { DestinationCategoriesClient } from '@/components/admin/destination-categories-client'
+import { DestinationCoverClient } from '@/components/admin/destination-cover-client'
 import type { Destination } from '@/types'
 import {
   Tabs,
@@ -29,6 +30,8 @@ export default async function AdminDestinationCollectionsPage({ params }: Props)
   const destination = await prisma.destinations.findUnique({ where: { id } })
   if (!destination) notFound()
 
+  const dest = destination as unknown as Destination
+
   const [collections, infoCategories, enabledCategories] = await Promise.all([
     getCollectionsByDestinationAdmin(id),
     getDestinationInfoCategories(id),
@@ -40,20 +43,27 @@ export default async function AdminDestinationCollectionsPage({ params }: Props)
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight">
-          {(destination as unknown as Destination).name}
-        </h1>
+        <h1 className="text-xl font-bold tracking-tight">{dest.name}</h1>
         <p className="mt-0.5 text-sm text-muted-foreground">
           Gestiona las colecciones curadas y la informacion local de este destino
         </p>
       </div>
 
-      <Tabs defaultValue="categories" className="w-full">
+      <Tabs defaultValue="cover" className="w-full">
         <TabsList className="w-full mb-4">
+          <TabsTrigger value="cover" className="flex-1">Portada</TabsTrigger>
           <TabsTrigger value="categories" className="flex-1">Categorias</TabsTrigger>
           <TabsTrigger value="collections" className="flex-1">Colecciones</TabsTrigger>
           <TabsTrigger value="info" className="flex-1">Info Local</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="cover" className="mt-0">
+          <DestinationCoverClient
+            destinationId={id}
+            initialCoverUrl={dest.cover_image_url}
+            destinationName={dest.name}
+          />
+        </TabsContent>
 
         <TabsContent value="categories" className="mt-0">
           <DestinationCategoriesClient

@@ -242,7 +242,7 @@ export type Experience_availabilityGroupByOutputType = {
   _max: Experience_availabilityMaxAggregateOutputType | null
 }
 
-type GetExperience_availabilityGroupByPayload<T extends experience_availabilityGroupByArgs> = Prisma.PrismaPromise<
+export type GetExperience_availabilityGroupByPayload<T extends experience_availabilityGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Experience_availabilityGroupByOutputType, T['by']> &
       {
@@ -1527,6 +1527,11 @@ export type experience_availabilityFindManyArgs<ExtArgs extends runtime.Types.Ex
    * Skip the first `n` experience_availabilities.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of experience_availabilities.
+   */
   distinct?: Prisma.Experience_availabilityScalarFieldEnum | Prisma.Experience_availabilityScalarFieldEnum[]
 }
 

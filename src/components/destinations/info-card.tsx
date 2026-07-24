@@ -71,7 +71,7 @@ export function InfoCard({
                 {actions.map && (
                     <button
                         onClick={() => onActionClick?.('map')}
-                        className="text-teal-600 active:scale-95 transition-transform"
+                        className="text-primary active:scale-95 transition-transform"
                     >
                         <MapIcon className="h-5 w-5" />
                     </button>
@@ -79,7 +79,7 @@ export function InfoCard({
                 {actions.phone && (
                     <button
                         onClick={() => onActionClick?.('phone')}
-                        className="text-teal-600 active:scale-95 transition-transform"
+                        className="text-primary active:scale-95 transition-transform"
                     >
                         <Phone className="h-5 w-5 fill-teal-600" />
                     </button>
@@ -87,7 +87,7 @@ export function InfoCard({
                 {actions.web && (
                     <button
                         onClick={() => onActionClick?.('web')}
-                        className="text-teal-600 active:scale-95 transition-transform"
+                        className="text-primary active:scale-95 transition-transform"
                     >
                         <Globe className="h-5 w-5" />
                     </button>

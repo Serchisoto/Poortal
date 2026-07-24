@@ -78,7 +78,7 @@ export default async function TourDetailPage({
                 <div className="flex justify-center -mt-10 mb-6 relative z-10 w-full">
                     <Link
                         href={`/tours/${id}/book`}
-                        className="flex items-center justify-center gap-2 bg-[#2b666a] text-white rounded-full px-10 py-3.5 active:scale-95 transition-transform shadow-lg w-[80%]"
+                        className="flex items-center justify-center gap-2 bg-primary text-white rounded-full px-10 py-3.5 active:scale-95 transition-transform shadow-lg w-[80%]"
                     >
                         {/* Custom SVG closest to the exact ticket icon in mockup */}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
@@ -139,7 +139,7 @@ export default async function TourDetailPage({
                                 </span>
                             </div>
                         </div>
-                        <button className="text-[#2b666a] bg-teal-50/50 p-2.5 rounded-full active:scale-95 transition-transform mt-1 shrink-0">
+                        <button className="text-[#2b666a] bg-primary/10/50 p-2.5 rounded-full active:scale-95 transition-transform mt-1 shrink-0">
                             <Share2 className="h-4 w-4" strokeWidth={2.5} />
                         </button>
                     </div>

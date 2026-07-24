@@ -227,7 +227,7 @@ export type Platform_creditsGroupByOutputType = {
   _max: Platform_creditsMaxAggregateOutputType | null
 }
 
-type GetPlatform_creditsGroupByPayload<T extends platform_creditsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPlatform_creditsGroupByPayload<T extends platform_creditsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Platform_creditsGroupByOutputType, T['by']> &
       {
@@ -1495,6 +1495,11 @@ export type platform_creditsFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` platform_credits.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of platform_credits.
+   */
   distinct?: Prisma.Platform_creditsScalarFieldEnum | Prisma.Platform_creditsScalarFieldEnum[]
 }
 

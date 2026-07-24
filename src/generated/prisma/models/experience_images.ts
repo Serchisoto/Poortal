@@ -206,7 +206,7 @@ export type Experience_imagesGroupByOutputType = {
   _max: Experience_imagesMaxAggregateOutputType | null
 }
 
-type GetExperience_imagesGroupByPayload<T extends experience_imagesGroupByArgs> = Prisma.PrismaPromise<
+export type GetExperience_imagesGroupByPayload<T extends experience_imagesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Experience_imagesGroupByOutputType, T['by']> &
       {
@@ -1236,6 +1236,11 @@ export type experience_imagesFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` experience_images.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of experience_images.
+   */
   distinct?: Prisma.Experience_imagesScalarFieldEnum | Prisma.Experience_imagesScalarFieldEnum[]
 }
 

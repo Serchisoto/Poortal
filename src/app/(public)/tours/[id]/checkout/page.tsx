@@ -111,7 +111,7 @@ function TourCheckoutContent() {
       <main className="container mx-auto px-6 flex flex-col gap-5 mt-4 max-w-md">
         {/* Top Info Section */}
         <div className="flex gap-4 items-start">
-          <div className="w-24 h-24 bg-teal-50 rounded-lg shrink-0 flex items-center justify-center border border-teal-100">
+          <div className="w-24 h-24 bg-primary/10 rounded-lg shrink-0 flex items-center justify-center border border-primary/10">
             <Ticket className="h-8 w-8 text-teal-400" />
           </div>
           <div className="flex flex-col gap-1.5 pt-1">
@@ -197,7 +197,7 @@ function TourCheckoutContent() {
         {/* Coupon */}
         <div className="flex justify-center mt-2">
           <button className="flex items-center gap-1.5">
-            <Percent className="h-4 w-4 text-teal-600" strokeWidth={3} />
+            <Percent className="h-4 w-4 text-primary" strokeWidth={3} />
             <span className="text-[10px] font-medium text-slate-800 underline underline-offset-2">coupon code</span>
           </button>
         </div>
@@ -212,7 +212,7 @@ function TourCheckoutContent() {
           <button
             onClick={() => router.push('/cart')}
             disabled={paying}
-            className="flex-1 flex items-center justify-center gap-2 border border-teal-700 text-teal-700 rounded-md py-3 active:scale-95 transition-transform bg-white disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 border border-primary text-primary rounded-md py-3 active:scale-95 transition-transform bg-white disabled:opacity-50"
           >
             <Plus className="h-5 w-5" strokeWidth={2} />
             <span className="text-sm font-semibold">add to cart</span>
@@ -220,7 +220,7 @@ function TourCheckoutContent() {
           <button
             onClick={handlePayNow}
             disabled={paying || loading || !experience}
-            className="flex-1 flex items-center justify-center gap-2 bg-teal-700 text-white rounded-md py-3 active:scale-95 transition-transform disabled:opacity-60"
+            className="flex-1 flex items-center justify-center gap-2 bg-primary text-white rounded-md py-3 active:scale-95 transition-transform disabled:opacity-60"
           >
             <Ticket className="h-5 w-5" />
             <span className="text-sm font-semibold">{paying ? 'procesando...' : 'pay now'}</span>
