@@ -40,19 +40,19 @@ export default async function AdminDestinationCollectionsPage({ params }: Props)
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-xl font-bold tracking-tight">
           {(destination as unknown as Destination).name}
         </h1>
-        <p className="mt-1 text-muted-foreground">
-          Gestiona las colecciones curadas y la información local de este destino
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          Gestiona las colecciones curadas y la informacion local de este destino
         </p>
       </div>
 
       <Tabs defaultValue="categories" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="categories">Categorías</TabsTrigger>
-          <TabsTrigger value="collections">Colecciones de Experiencias</TabsTrigger>
-          <TabsTrigger value="info">Información Local</TabsTrigger>
+        <TabsList className="w-full mb-4">
+          <TabsTrigger value="categories" className="flex-1">Categorias</TabsTrigger>
+          <TabsTrigger value="collections" className="flex-1">Colecciones</TabsTrigger>
+          <TabsTrigger value="info" className="flex-1">Info Local</TabsTrigger>
         </TabsList>
 
         <TabsContent value="categories" className="mt-0">

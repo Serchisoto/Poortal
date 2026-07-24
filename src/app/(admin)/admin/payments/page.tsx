@@ -9,6 +9,7 @@ import {
   ArrowDownToLine,
 } from 'lucide-react'
 import prisma from '@/lib/prisma'
+import { PLATFORM_FEE_PERCENTAGE } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Pagos de la Plataforma',
@@ -82,7 +83,7 @@ export default async function AdminPaymentsPage() {
 
   const summaryCards = [
     { title: 'Ingresos totales', value: `$${totalRevenue.toLocaleString('es-MX')}`, sub: 'Cobros exitosos este mes', icon: DollarSign },
-    { title: 'Comision POORTAL', value: `$${totalFee.toLocaleString('es-MX')}`, sub: '15% — este mes', icon: TrendingUp },
+    { title: 'Comision POORTAL', value: `$${totalFee.toLocaleString('es-MX')}`, sub: `${PLATFORM_FEE_PERCENTAGE}% — este mes`, icon: TrendingUp },
     { title: 'Pagos procesados', value: processedCount.toString(), sub: 'Cobros exitosos este mes', icon: CreditCard },
     { title: 'A proveedores', value: `$${totalTransfers.toLocaleString('es-MX')}`, sub: `${transferCount} transferencias`, icon: ArrowDownToLine },
   ]

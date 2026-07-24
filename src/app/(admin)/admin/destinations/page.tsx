@@ -30,10 +30,10 @@ export default async function AdminDestinationsPage() {
   }, {})
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Gestion de Destinos</h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-xl font-bold tracking-tight">Destinos</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Administra los destinos y sus colecciones curadas
         </p>
       </div>
@@ -46,7 +46,7 @@ export default async function AdminDestinationsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {destinations.map((dest) => {
             const collectionCount = collectionCountByDestination[dest.id] ?? 0
             return (
