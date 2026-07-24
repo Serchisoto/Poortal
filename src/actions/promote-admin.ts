@@ -14,7 +14,7 @@ export async function promoteToAdmin(email: string): Promise<{ success?: string;
 
   const profile = await prisma.profiles.findUnique({
     where: { email: normalized },
-    select: { id: true, role: true, full_name: true },
+    select: { id: true, role: true, full_name: true, user_id: true },
   })
 
   if (!profile) {
@@ -29,6 +29,15 @@ export async function promoteToAdmin(email: string): Promise<{ success?: string;
     where: { id: profile.id },
     data: { role: 'admin' },
   })
+
+  // Keep Better Auth's user.role in sync — the edge middleware authorizes
+  // admin routes based on this field, not on profiles.role.
+  if (profile.user_id) {
+    await prisma.user.update({
+      where: { id: profile.user_id },
+      data: { role: 'admin' },
+    })
+  }
 
   return { success: `Listo. El usuario "${normalized}" ahora es administrador. Inicia sesion en /admin/dashboard.` }
 }
