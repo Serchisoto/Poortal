@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight, Minus, Plus, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from '@/lib/auth-client'
+import { GuestEmailModal } from '@/components/guest-email-modal'
 
 interface AvailabilitySlot {
   id: string
@@ -35,6 +36,7 @@ export default function TourBookingPage() {
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null)
   const [people, setPeople] = useState(2)
   const [loading, setLoading] = useState(true)
+  const [showGuestModal, setShowGuestModal] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -43,10 +45,7 @@ export default function TourBookingPage() {
           fetch(`/api/experiences/${id}`),
           fetch(`/api/experiences/${id}/availability`),
         ])
-        if (expRes.ok) {
-          const exp = await expRes.json()
-          setExperience(exp)
-        }
+        if (expRes.ok) setExperience(await expRes.json())
         if (availRes.ok) {
           const slots: AvailabilitySlot[] = await availRes.json()
           setAvailability(slots)
@@ -60,7 +59,6 @@ export default function TourBookingPage() {
   }, [id])
 
   const selectedSlot = availability.find((s) => s.id === selectedSlotId) ?? null
-
   const unitPrice = selectedSlot?.price_override ?? experience?.price_amount ?? 0
   const isPerPerson = experience?.pricing_type === 'per_person'
   const totalAmount = isPerPerson ? unitPrice * people : unitPrice
@@ -75,28 +73,37 @@ export default function TourBookingPage() {
 
   const formatTime = (iso: string) => {
     if (!iso) return ''
-    const d = new Date(iso)
-    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+    return new Date(iso).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+  }
+
+  function buildCheckoutParams(guestEmail?: string, guestName?: string) {
+    const p = new URLSearchParams({
+      availabilityId: selectedSlot!.id,
+      date: selectedSlot!.date,
+      time: selectedSlot!.start_time,
+      people: String(people),
+      unitPrice: String(unitPrice),
+      total: String(totalAmount),
+      pricingType: experience?.pricing_type ?? 'per_person',
+      providerId: experience?.provider_id ?? '',
+    })
+    if (guestEmail) p.set('guestEmail', guestEmail)
+    if (guestName) p.set('guestName', guestName)
+    return p.toString()
   }
 
   const handleContinue = () => {
     if (!selectedSlot || totalAmount === 0) return
-
-    const params = new URLSearchParams({
-      availabilityId: selectedSlot.id,
-      date: selectedSlot.date,
-      time: selectedSlot.start_time,
-      people: String(people),
-      unitPrice: String(unitPrice),
-      total: String(totalAmount),
-    })
-
-    if (!session?.user) {
-      router.push(`/login?redirectTo=/tours/${id}/book?${params.toString()}`)
-      return
+    if (session?.user) {
+      router.push(`/tours/${id}/checkout?${buildCheckoutParams()}`)
+    } else {
+      setShowGuestModal(true)
     }
+  }
 
-    router.push(`/tours/${id}/checkout?${params.toString()}`)
+  const handleGuestConfirm = (guestEmail: string, guestName: string) => {
+    setShowGuestModal(false)
+    router.push(`/tours/${id}/checkout?${buildCheckoutParams(guestEmail, guestName)}`)
   }
 
   const visibleSlots = availability.slice(0, 5)
@@ -105,10 +112,7 @@ export default function TourBookingPage() {
     <div className="min-h-screen bg-white pb-32 flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-6 pb-4">
-        <button
-          onClick={() => router.back()}
-          className="p-2 -ml-2 text-slate-900 active:scale-95 transition-transform"
-        >
+        <button onClick={() => router.back()} className="p-2 -ml-2 text-slate-900 active:scale-95 transition-transform">
           <ChevronLeft className="h-8 w-8" strokeWidth={3} />
         </button>
         <div className="border border-slate-200 rounded-full px-8 py-3 shadow-sm max-w-[60%]">
@@ -123,15 +127,11 @@ export default function TourBookingPage() {
         {loading ? (
           <div className="flex flex-col gap-4 animate-pulse">
             <div className="flex gap-3 justify-center">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-14 w-20 rounded-full bg-slate-100" />
-              ))}
+              {[1, 2, 3].map((i) => <div key={i} className="h-14 w-20 rounded-full bg-slate-100" />)}
             </div>
             <div className="h-10 w-24 rounded-md bg-slate-100" />
             <div className="flex flex-col gap-3">
-              {[1, 2].map((i) => (
-                <div key={i} className="h-16 rounded-full bg-slate-100" />
-              ))}
+              {[1, 2].map((i) => <div key={i} className="h-16 rounded-full bg-slate-100" />)}
             </div>
           </div>
         ) : (
@@ -151,11 +151,9 @@ export default function TourBookingPage() {
                       onClick={() => setSelectedSlotId(slot.id)}
                       className={cn(
                         'flex flex-col items-center justify-center rounded-full px-5 py-2 transition-colors min-w-[72px]',
-                        isSelected
-                          ? 'bg-teal-700 text-white'
-                          : isFull
-                          ? 'border border-slate-100 text-slate-300 cursor-not-allowed'
-                          : 'border border-slate-200 text-slate-600 active:scale-95'
+                        isSelected ? 'bg-teal-700 text-white' :
+                        isFull ? 'border border-slate-100 text-slate-300 cursor-not-allowed' :
+                        'border border-slate-200 text-slate-600 active:scale-95'
                       )}
                     >
                       <span className="text-[10px] font-bold tracking-wider uppercase">{day}</span>
@@ -165,9 +163,7 @@ export default function TourBookingPage() {
                 })}
               </div>
             ) : (
-              <div className="text-center text-sm text-slate-500 py-4">
-                No hay fechas disponibles en este momento.
-              </div>
+              <p className="text-center text-sm text-slate-500 py-4">No hay fechas disponibles en este momento.</p>
             )}
 
             {/* Time Badge */}
@@ -191,34 +187,22 @@ export default function TourBookingPage() {
                     <div className="text-[10px] text-teal-700 font-bold leading-tight">Admission</div>
                     <div className="text-[10px] text-slate-400 font-medium leading-tight mb-1">Per person</div>
                     <div className="font-bold text-slate-900">
-                      {new Intl.NumberFormat('es-MX', {
-                        style: 'currency',
-                        currency: experience?.price_currency || 'MXN',
-                        maximumFractionDigits: 0,
-                      }).format(unitPrice)}
+                      {new Intl.NumberFormat('es-MX', { style: 'currency', currency: experience?.price_currency || 'MXN', maximumFractionDigits: 0 }).format(unitPrice)}
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-4 pr-1">
-                  <button
-                    onClick={() => setPeople((p) => Math.max(1, p - 1))}
-                    className="p-1 active:scale-95 text-slate-900"
-                  >
+                  <button onClick={() => setPeople((p) => Math.max(1, p - 1))} className="p-1 active:scale-95 text-slate-900">
                     <Minus className="h-5 w-5" strokeWidth={3} />
                   </button>
                   <span className="font-bold text-sm w-4 text-center">{people}</span>
-                  <button
-                    onClick={() => setPeople((p) => p + 1)}
-                    className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95"
-                  >
+                  <button onClick={() => setPeople((p) => p + 1)} className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95">
                     <Plus className="h-5 w-5" strokeWidth={3} />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Availability notice */}
             {selectedSlot && (
               <p className="text-[11px] text-slate-400 text-center -mt-2">
                 {selectedSlot.total_spots - selectedSlot.booked_spots} spots remaining
@@ -234,11 +218,7 @@ export default function TourBookingPage() {
           <div className="flex items-baseline gap-3">
             <span className="text-teal-700 font-bold tracking-widest text-lg">TOTAL</span>
             <span className="text-slate-900 font-bold text-lg">
-              {new Intl.NumberFormat('es-MX', {
-                style: 'currency',
-                currency: experience?.price_currency || 'MXN',
-                maximumFractionDigits: 0,
-              }).format(totalAmount)}
+              {new Intl.NumberFormat('es-MX', { style: 'currency', currency: experience?.price_currency || 'MXN', maximumFractionDigits: 0 }).format(totalAmount)}
             </span>
           </div>
           <button
@@ -249,11 +229,19 @@ export default function TourBookingPage() {
               selectedSlot && !loading ? 'bg-teal-700' : 'bg-slate-300 cursor-not-allowed'
             )}
           >
-            {session?.user ? 'continue' : 'log in to book'}
+            continue
             <ChevronRight className="h-4 w-4" strokeWidth={3} />
           </button>
         </div>
       </div>
+
+      {/* Guest Email Modal */}
+      {showGuestModal && (
+        <GuestEmailModal
+          onConfirm={handleGuestConfirm}
+          onClose={() => setShowGuestModal(false)}
+        />
+      )}
     </div>
   )
 }

@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-
 import { ChevronLeft, Info, Minus, Plus, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from '@/lib/auth-client'
+import { GuestEmailModal } from '@/components/guest-email-modal'
 
 export default function NightlifeBookingPage() {
     const router = useRouter()
@@ -13,37 +13,53 @@ export default function NightlifeBookingPage() {
     const id = params.id
     const { data: session } = useSession()
 
-    // Mock State for UI interactivity
     const [selectedDate, setSelectedDate] = useState('15-jun')
     const [selectedCategory, setSelectedCategory] = useState<'A' | 'B'>('A')
+    const [showGuestModal, setShowGuestModal] = useState(false)
 
-    // Ticket quantities state
     const [tickets, setTickets] = useState<{ id: string, name: string, type: string, price: number, qty: number }[]>([
         { id: '1', name: 'Regular Ticket', type: 'Dance floor', price: 100, qty: 0 },
-        { id: '2', name: 'Regular Ticket', type: 'Dance floor', price: 100, qty: 0 },
-        { id: '3', name: 'Regular Ticket', type: 'Dance floor', price: 100, qty: 0 },
-        { id: '4', name: 'Regular Ticket', type: 'Dance floor', price: 100, qty: 0 },
+        { id: '2', name: 'VIP Ticket',     type: 'VIP area',    price: 250, qty: 0 },
+        { id: '3', name: 'Table Service',  type: 'Booth',       price: 500, qty: 0 },
+        { id: '4', name: 'Open Bar',       type: 'All night',   price: 150, qty: 0 },
     ])
 
-    const updateQty = (id: string, delta: number) => {
-        setTickets(prev => prev.map(t => {
-            if (t.id === id) {
-                const newQty = Math.max(0, t.qty + delta)
-                return { ...t, qty: newQty }
-            }
-            return t
-        }))
+    const updateQty = (ticketId: string, delta: number) => {
+        setTickets(prev => prev.map(t =>
+            t.id === ticketId ? { ...t, qty: Math.max(0, t.qty + delta) } : t
+        ))
     }
 
     const totalAmount = tickets.reduce((sum, t) => sum + (t.price * t.qty), 0)
+    const totalQty    = tickets.reduce((sum, t) => sum + t.qty, 0)
+
+    function buildCheckoutParams(guestEmail?: string, guestName?: string) {
+        const firstTicket = tickets.find(t => t.qty > 0)
+        const p = new URLSearchParams({
+            date: selectedDate,
+            people: String(totalQty),
+            total:  String(totalAmount),
+            unitPrice: String(firstTicket?.price ?? 0),
+            pricingType: 'per_person',
+            providerId: '',
+        })
+        if (guestEmail) p.set('guestEmail', guestEmail)
+        if (guestName)  p.set('guestName', guestName)
+        return p.toString()
+    }
 
     const handleContinue = () => {
         if (totalAmount <= 0) return
-        if (!session?.user) {
-            router.push(`/login?redirectTo=/nightlife/${id}/checkout`)
-            return
+        if (session?.user) {
+            router.push(`/nightlife/${id}/checkout?${buildCheckoutParams()}`)
+        } else {
+            setShowGuestModal(true)
         }
-        router.push(`/nightlife/${id}/checkout`)
+    }
+
+    const handleGuestConfirm = (guestEmail: string, guestName: string) => {
+        setShowGuestModal(false)
+        router.push(`/nightlife/${id}/checkout?${buildCheckoutParams(guestEmail, guestName)}`)
     }
 
     return (
@@ -57,41 +73,35 @@ export default function NightlifeBookingPage() {
                     <ChevronLeft className="h-8 w-8" strokeWidth={3} />
                 </button>
                 <div className="border border-slate-200 rounded-full px-12 py-3 shadow-sm">
-                    <h1 className="text-base font-bold text-slate-800 tracking-wide uppercase">
-                        ROLANDIS
-                    </h1>
+                    <h1 className="text-base font-bold text-slate-800 tracking-wide uppercase">BOOK</h1>
                 </div>
-                <div className="w-8"></div> {/* Spacer */}
+                <div className="w-8" />
             </div>
 
             <main className="container mx-auto px-6 flex flex-col mt-4 max-w-md">
 
-                {/* Date Selection Row */}
+                {/* Date Selection */}
                 <div className="flex gap-3 justify-center">
-                    <button
-                        onClick={() => setSelectedDate('15-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '15-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
-                    >
-                        <span className="text-[10px] font-bold tracking-wider uppercase">MON</span>
-                        <span className="text-[10px]">15 Jun</span>
-                    </button>
-                    <button
-                        onClick={() => setSelectedDate('16-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '16-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
-                    >
-                        <span className="text-[10px] uppercase font-medium">TUE</span>
-                        <span className="text-[10px]">16 Jun</span>
-                    </button>
-                    <button
-                        onClick={() => setSelectedDate('17-jun')}
-                        className={cn("flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors", selectedDate === '17-jun' ? "bg-teal-700 text-white" : "border border-slate-200 text-slate-600")}
-                    >
-                        <span className="text-[10px] uppercase font-medium">WED</span>
-                        <span className="text-[10px]">17 Jun</span>
-                    </button>
+                    {[
+                        { key: '15-jun', day: 'MON', label: '15 Jun' },
+                        { key: '16-jun', day: 'TUE', label: '16 Jun' },
+                        { key: '17-jun', day: 'WED', label: '17 Jun' },
+                    ].map(({ key, day, label }) => (
+                        <button
+                            key={key}
+                            onClick={() => setSelectedDate(key)}
+                            className={cn(
+                                'flex flex-col items-center justify-center rounded-full px-6 py-2 transition-colors',
+                                selectedDate === key ? 'bg-teal-700 text-white' : 'border border-slate-200 text-slate-600'
+                            )}
+                        >
+                            <span className="text-[10px] font-bold tracking-wider uppercase">{day}</span>
+                            <span className="text-[10px]">{label}</span>
+                        </button>
+                    ))}
                 </div>
 
-                {/* Time Selection */}
+                {/* Time */}
                 <div className="mt-6 flex justify-start">
                     <div className="bg-teal-700 text-white text-xs font-semibold px-5 py-2.5 rounded-md">
                         8:00 pm
@@ -100,21 +110,21 @@ export default function NightlifeBookingPage() {
 
                 {/* Categories Tab */}
                 <div className="mt-6 flex gap-2 w-full">
-                    <button
-                        onClick={() => setSelectedCategory('A')}
-                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'A' ? "bg-teal-700 text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
-                    >
-                        CATEGORY A
-                    </button>
-                    <button
-                        onClick={() => setSelectedCategory('B')}
-                        className={cn("flex-1 py-3 text-xs font-semibold rounded-md transition-colors", selectedCategory === 'B' ? "bg-teal-700 text-white shadow-sm" : "bg-white border text-slate-800 border-slate-200")}
-                    >
-                        CATEGORY B
-                    </button>
+                    {(['A', 'B'] as const).map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={cn(
+                                'flex-1 py-3 text-xs font-semibold rounded-md transition-colors',
+                                selectedCategory === cat ? 'bg-teal-700 text-white shadow-sm' : 'bg-white border text-slate-800 border-slate-200'
+                            )}
+                        >
+                            CATEGORY {cat}
+                        </button>
+                    ))}
                 </div>
 
-                {/* Tickets List */}
+                {/* Tickets */}
                 <div className="mt-6 flex flex-col gap-4">
                     {tickets.map((ticket) => (
                         <div key={ticket.id} className="flex items-center justify-between p-4 rounded-full border border-slate-200 shadow-sm bg-white">
@@ -128,21 +138,12 @@ export default function NightlifeBookingPage() {
                                     <div className="font-bold text-slate-900">$ {ticket.price.toFixed(2)}</div>
                                 </div>
                             </div>
-
                             <div className="flex items-center gap-4 pr-1">
-                                <button
-                                    onClick={() => updateQty(ticket.id, -1)}
-                                    className="p-1 active:scale-95 text-slate-900"
-                                >
+                                <button onClick={() => updateQty(ticket.id, -1)} className="p-1 active:scale-95 text-slate-900">
                                     <Minus className="h-5 w-5" strokeWidth={3} />
                                 </button>
-                                {ticket.qty > 0 && (
-                                    <span className="font-bold text-sm w-4 text-center">{ticket.qty}</span>
-                                )}
-                                <button
-                                    onClick={() => updateQty(ticket.id, 1)}
-                                    className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95"
-                                >
+                                <span className="font-bold text-sm w-4 text-center">{ticket.qty > 0 ? ticket.qty : ''}</span>
+                                <button onClick={() => updateQty(ticket.id, 1)} className="bg-teal-700 text-white rounded-full p-1.5 shadow-sm active:scale-95">
                                     <Plus className="h-5 w-5" strokeWidth={3} />
                                 </button>
                             </div>
@@ -161,13 +162,24 @@ export default function NightlifeBookingPage() {
                     <button
                         onClick={handleContinue}
                         disabled={totalAmount === 0}
-                        className={cn("flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none", totalAmount > 0 ? "bg-teal-700" : "bg-slate-300 cursor-not-allowed")}
+                        className={cn(
+                            'flex items-center gap-1 text-white rounded-md px-4 py-2 text-xs font-semibold active:scale-95 transition-all outline-none',
+                            totalAmount > 0 ? 'bg-teal-700' : 'bg-slate-300 cursor-not-allowed'
+                        )}
                     >
-                        {session?.user ? 'continue' : 'log in to book'}
+                        continue
                         <ChevronRight className="h-4 w-4" strokeWidth={3} />
                     </button>
                 </div>
             </div>
+
+            {/* Guest Email Modal */}
+            {showGuestModal && (
+                <GuestEmailModal
+                    onConfirm={handleGuestConfirm}
+                    onClose={() => setShowGuestModal(false)}
+                />
+            )}
         </div>
     )
 }
