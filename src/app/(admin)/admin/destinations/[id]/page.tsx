@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { getCollectionsByDestinationAdmin } from '@/queries/collections'
 import { getDestinationInfoCategories } from '@/queries/destination_info'
+import { getDestinationCategories } from '@/queries/destinations'
 import { DestinationCollectionsClient } from '@/components/admin/destination-collections-client'
 import { DestinationInfoClient } from '@/components/admin/destination-info-client'
+import { DestinationCategoriesClient } from '@/components/admin/destination-categories-client'
 import type { Destination } from '@/types'
 import {
   Tabs,
@@ -27,10 +29,13 @@ export default async function AdminDestinationCollectionsPage({ params }: Props)
   const destination = await prisma.destinations.findUnique({ where: { id } })
   if (!destination) notFound()
 
-  const [collections, infoCategories] = await Promise.all([
+  const [collections, infoCategories, enabledCategories] = await Promise.all([
     getCollectionsByDestinationAdmin(id),
     getDestinationInfoCategories(id),
+    getDestinationCategories(id),
   ])
+
+  const enabledSlugs = enabledCategories.map((c) => c.slug)
 
   return (
     <div className="space-y-6">
@@ -43,11 +48,19 @@ export default async function AdminDestinationCollectionsPage({ params }: Props)
         </p>
       </div>
 
-      <Tabs defaultValue="collections" className="w-full">
+      <Tabs defaultValue="categories" className="w-full">
         <TabsList className="mb-4">
+          <TabsTrigger value="categories">Categorías</TabsTrigger>
           <TabsTrigger value="collections">Colecciones de Experiencias</TabsTrigger>
           <TabsTrigger value="info">Información Local</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="categories" className="mt-0">
+          <DestinationCategoriesClient
+            destinationId={id}
+            enabledSlugs={enabledSlugs}
+          />
+        </TabsContent>
 
         <TabsContent value="collections" className="mt-0">
           <DestinationCollectionsClient

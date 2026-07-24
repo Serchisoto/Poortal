@@ -23,6 +23,8 @@ import {
   Store,
   Shield,
   LogOut,
+  MapPin,
+  ChevronDown,
 } from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 import { useCartStore } from '@/stores/cart-store'
@@ -49,11 +51,19 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden items-center space-x-6 md:flex">
+          {/* City switcher */}
           <Link
-            href={ROUTES.destination('cancun')}
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            href={ROUTES.destination(activeSlug || 'cancun')}
+            className="flex items-center gap-1.5 rounded-xl py-1.5 px-2.5 transition-colors hover:bg-muted"
           >
-            Cancun
+            <MapPin className="h-4 w-4 text-primary shrink-0" strokeWidth={2} />
+            <div className="flex flex-col leading-none">
+              <span className="text-[10px] text-muted-foreground font-medium tracking-wide uppercase">Destino</span>
+              <span className="text-sm font-bold text-foreground capitalize">
+                {activeSlug || 'Cancun'}
+              </span>
+            </div>
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground mt-0.5" strokeWidth={2.5} />
           </Link>
           <Link
             href={infoHref}
