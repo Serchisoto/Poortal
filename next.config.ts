@@ -1,7 +1,8 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.75'],
+  serverExternalPackages: ['resend'],
+  allowedDevOrigins: ['192.168.1.75', '*.v0.dev', '*.vercel.app'],
   async redirects() {
     return [
       {

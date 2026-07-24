@@ -1,10 +1,16 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Flag, Volleyball, Waves } from 'lucide-react'
 
 export default function SportsSearchPage() {
     const router = useRouter()
+    const [pending, startTransition] = useTransition()
+
+    function navigate(href: string) {
+        startTransition(() => { router.push(href) })
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -36,52 +42,31 @@ export default function SportsSearchPage() {
 
                     {/* Golf Option */}
                     <button
-                        onClick={() => router.push('/sports/golf')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/sports/golf')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
-                        <div className="mb-4 text-blue-400">
-                            {/* Mock Golf Cart SVG */}
-                            <svg width="80" height="60" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="30" y="30" width="40" height="20" rx="4" fill="#60a5fa" />
-                                <path d="M40 30L35 15H65L60 30H40Z" fill="#3b82f6" />
-                                <rect x="35" y="10" width="30" height="5" fill="#1e3a8a" />
-                                <circle cx="35" cy="50" r="8" fill="#1e293b" />
-                                <circle cx="65" cy="50" r="8" fill="#1e293b" />
-                                {/* Golf Bag */}
-                                <rect x="20" y="20" width="10" height="30" rx="2" fill="#d1d5db" />
-                            </svg>
-                        </div>
+                        <Flag className="h-12 w-12 mb-3 text-green-600" strokeWidth={1.25} />
                         <span className="text-lg font-medium text-slate-800">Golf green</span>
                     </button>
 
                     {/* Football Option */}
                     <button
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 active:scale-95 transition-transform"
+                        onClick={() => navigate('/sports/soccer')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-4 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
-                        <div className="mb-4 text-slate-800">
-                            {/* Mock Soccer Ball SVG */}
-                            <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="45" fill="#cbd5e1" stroke="#334155" strokeWidth="4" />
-                                <path d="M50 25L35 40V60L50 75L65 60V40L50 25Z" fill="#334155" />
-                                <path d="M35 40L15 30M35 60L15 70M65 40L85 30M65 60L85 70M50 25V5M50 75V95" stroke="#334155" strokeWidth="4" />
-                            </svg>
-                        </div>
+                        <Volleyball className="h-12 w-12 mb-3 text-slate-700" strokeWidth={1.25} />
                         <span className="text-lg font-medium text-slate-800">Football Field</span>
                     </button>
 
                     {/* Water Sports Option */}
                     <button
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/sports/water-sports')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
-                        <div className="mb-4 text-yellow-400">
-                            {/* Mock Submarine/Water Scooter SVG */}
-                            <svg width="80" height="60" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="50" cy="40" rx="30" ry="15" fill="#facc15" />
-                                <circle cx="50" cy="40" r="8" fill="#38bdf8" />
-                                <rect x="25" y="30" width="10" height="20" rx="5" fill="#ca8a04" />
-                                <rect x="65" y="30" width="10" height="20" rx="5" fill="#ca8a04" />
-                            </svg>
-                        </div>
+                        <Waves className="h-12 w-12 mb-3 text-blue-400" strokeWidth={1.25} />
                         <span className="text-lg font-medium text-slate-800">Water Sports</span>
                     </button>
 

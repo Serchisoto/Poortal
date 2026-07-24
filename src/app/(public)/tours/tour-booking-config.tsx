@@ -102,7 +102,6 @@ export function TourBookingConfig({
       <div className="fixed inset-x-0 bottom-20 px-6 pb-4 md:bottom-4">
         <Button
           onClick={handleContinue}
-          disabled={!date}
           className="w-full rounded-full bg-primary text-primary-foreground py-6 text-base font-semibold"
           size="lg"
         >

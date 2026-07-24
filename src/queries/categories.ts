@@ -16,6 +16,13 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   return row as unknown as Category | null
 }
 
+export async function getSubcategoryBySlug(slug: string): Promise<Subcategory | null> {
+  const row = await prisma.subcategories.findFirst({
+    where: { slug },
+  })
+  return row as unknown as Subcategory | null
+}
+
 export async function getSubcategories(categoryId: string): Promise<Subcategory[]> {
   const rows = await prisma.subcategories.findMany({
     where: { category_id: categoryId, is_active: true },

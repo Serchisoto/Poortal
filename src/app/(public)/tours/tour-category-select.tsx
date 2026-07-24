@@ -8,14 +8,58 @@ import { DynamicIcon } from '@/lib/lucide-icon-map'
 import { cn } from '@/lib/utils'
 import type { Subcategory } from '@/types'
 
+// Map subcategory slugs to lucide icon names
+const SUBCATEGORY_ICONS: Record<string, string> = {
+  // Tours
+  'adventure':       'Compass',
+  'culture-tour':    'Landmark',
+  'relax-tour':      'Armchair',
+  'extreme-tour':    'Zap',
+  'discovery-tour':  'Binoculars',
+  'personal-growth': 'Sprout',
+  // Ride
+  'cab':             'Car',
+  'rental':          'KeyRound',
+  // Food
+  'restaurants':     'UtensilsCrossed',
+  'food-experiences':'ChefHat',
+  'delivery-food':   'ShoppingBag',
+  // Party
+  'nightlife':       'Moon',
+  'daylife':         'Sun',
+  // Sea
+  'boat-rental':     'Anchor',
+  'expeditions':     'Waves',
+  'fishing':         'Fish',
+  // Culture
+  'shows':           'Theater',
+  'culture-exp':     'PaintbrushVertical',
+  // Sports
+  'golf':            'CircleDot',
+  'soccer':          'CircleDot',
+  'tennis':          'Activity',
+  'water-sports':    'Sailboat',
+  // Stay
+  'hotel':           'Building2',
+  'hostal':          'BedDouble',
+  'house':           'Home',
+  // Shopping
+  'go-shopping':     'ShoppingBag',
+  'delivery-shop':   'Package',
+  // Wellness
+  'spa':             'Flower2',
+  'wellness-exp':    'HeartPulse',
+  'health':          'Stethoscope',
+}
+
 // Fallback subcategories if none come from the DB
 const FALLBACK_SUBCATEGORIES = [
-  { id: 'adventure', name: 'Adventure', icon: 'Compass' },
-  { id: 'culture', name: 'Culture', icon: 'Landmark' },
-  { id: 'relax', name: 'Relax', icon: 'Heart' },
-  { id: 'extreme', name: 'Extreme', icon: 'Dumbbell' },
-  { id: 'discovery', name: 'Discovery', icon: 'MapPin' },
-  { id: 'personal-growth', name: 'Personal Growth', icon: 'Sparkles' },
+  { id: 'adventure',       name: 'Adventure',      slug: 'adventure' },
+  { id: 'culture-tour',    name: 'Culture',         slug: 'culture-tour' },
+  { id: 'relax-tour',      name: 'Relax',           slug: 'relax-tour' },
+  { id: 'extreme-tour',    name: 'Extreme',         slug: 'extreme-tour' },
+  { id: 'discovery-tour',  name: 'Discovery',       slug: 'discovery-tour' },
+  { id: 'personal-growth', name: 'Personal Growth', slug: 'personal-growth' },
 ]
 
 interface TourCategorySelectProps {
@@ -33,8 +77,8 @@ export function TourCategorySelect({
   const [selected, setSelected] = useState<string[]>(initialSelected)
 
   const items = subcategories.length > 0
-    ? subcategories.map((s) => ({ id: s.id, name: s.name, icon: s.description ?? null }))
-    : FALLBACK_SUBCATEGORIES.map((s) => ({ id: s.id, name: s.name, icon: s.icon }))
+    ? subcategories.map((s) => ({ id: s.id, name: s.name, icon: SUBCATEGORY_ICONS[s.slug] ?? 'MapPin' }))
+    : FALLBACK_SUBCATEGORIES.map((s) => ({ id: s.id, name: s.name, icon: SUBCATEGORY_ICONS[s.slug] ?? 'MapPin' }))
 
   function toggle(id: string) {
     setSelected((prev) =>

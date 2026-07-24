@@ -4,10 +4,9 @@ import { useState } from 'react'
 import type { Subcategory } from '@/types'
 import { TourCategorySelect } from './tour-category-select'
 import { TourBookingConfig } from './tour-booking-config'
-import { TourLoading } from './tour-loading'
 import { TourResults } from './tour-results'
 
-type Step = 'categories' | 'config' | 'loading' | 'results'
+type Step = 'categories' | 'config' | 'results'
 
 export interface TourSearchConfig {
   subcategoryIds: string[]
@@ -32,10 +31,6 @@ export function TourFlow({ subcategories, categoryId }: TourFlowProps) {
 
   function handleConfigContinue(searchConfig: TourSearchConfig) {
     setConfig(searchConfig)
-    setStep('loading')
-  }
-
-  function handleLoadingComplete() {
     setStep('results')
   }
 
@@ -59,9 +54,6 @@ export function TourFlow({ subcategories, categoryId }: TourFlowProps) {
           onContinue={handleConfigContinue}
           onBack={handleBack}
         />
-      )}
-      {step === 'loading' && (
-        <TourLoading onComplete={handleLoadingComplete} />
       )}
       {step === 'results' && config && (
         <TourResults

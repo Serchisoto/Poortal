@@ -1,10 +1,16 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 
 export default function CultureSearchPage() {
     const router = useRouter()
+    const [pending, startTransition] = useTransition()
+
+    function navigate(href: string) {
+        startTransition(() => { router.push(href) })
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
@@ -36,8 +42,9 @@ export default function CultureSearchPage() {
 
                     {/* Shows / Concerts Option */}
                     <button
-                        onClick={() => router.push('/culture/shows')}
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/culture/shows')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 mb-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4 text-rose-600">
                             {/* Mock Singer/Show SVG */}
@@ -57,7 +64,9 @@ export default function CultureSearchPage() {
 
                     {/* Experiences Option */}
                     <button
-                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 active:scale-95 transition-transform"
+                        onClick={() => navigate('/culture/experiences')}
+                        className="w-[85%] bg-white rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center py-6 transition-all active:scale-95 disabled:opacity-50"
+                        disabled={pending}
                     >
                         <div className="mb-4 text-orange-500">
                             {/* Mock Experience/Tour SVG */}

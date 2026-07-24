@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getCategoryBySlug } from '@/queries/categories'
+import { getCategoryBySlug, getSubcategoryBySlug } from '@/queries/categories'
 import { searchExperiences } from '@/queries/experiences'
 import { BackButton } from '../restaurants/back-button'
 
@@ -10,8 +10,13 @@ export const metadata = {
 }
 
 export default async function RentalSearchPage() {
-    const category = await getCategoryBySlug('sea') // Assuming 'sea' or 'rental' is the DB slug
-    const experiences = category ? await searchExperiences({ categoryId: category.id }) : []
+    const [category, subcategory] = await Promise.all([
+        getCategoryBySlug('sea'),
+        getSubcategoryBySlug('boat-rental'),
+    ])
+    const experiences = category
+        ? await searchExperiences({ categoryId: category.id, subcategoryId: subcategory?.id })
+        : []
 
     return (
         <div className="min-h-screen bg-white flex flex-col relative pb-10">
