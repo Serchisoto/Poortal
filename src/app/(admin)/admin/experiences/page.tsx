@@ -97,38 +97,35 @@ export default async function AdminExperiencesPage() {
   ])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Moderacion de Experiencias
-        </h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-xl font-bold tracking-tight">Experiencias</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Revisa y modera las experiencias publicadas en la plataforma
         </p>
       </div>
 
       <Tabs defaultValue="pendientes">
-        <TabsList>
-          <TabsTrigger value="pendientes">
-            <Clock className="mr-1 h-4 w-4" />
-            En revision
+        <TabsList className="w-full">
+          <TabsTrigger value="pendientes" className="flex-1 gap-1.5">
+            <Clock className="h-3.5 w-3.5 shrink-0" />
+            <span>Revision</span>
             {pendingList.length > 0 && (
-              <Badge variant="secondary" className="ml-2">{pendingList.length}</Badge>
+              <Badge variant="destructive" className="h-4 min-w-4 rounded-full px-1 text-[10px]">{pendingList.length}</Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="activas">
-            <CheckCircle className="mr-1 h-4 w-4" />
-            Activas
-            <Badge variant="secondary" className="ml-2">{activeList.length}</Badge>
+          <TabsTrigger value="activas" className="flex-1 gap-1.5">
+            <CheckCircle className="h-3.5 w-3.5 shrink-0" />
+            <span>Activas</span>
+            <Badge variant="secondary" className="h-4 min-w-4 rounded-full px-1 text-[10px]">{activeList.length}</Badge>
           </TabsTrigger>
-          <TabsTrigger value="otras">
-            <AlertCircle className="mr-1 h-4 w-4" />
-            Rechazadas/Otras
-            <Badge variant="secondary" className="ml-2">{rejectedList.length}</Badge>
+          <TabsTrigger value="otras" className="flex-1 gap-1.5">
+            <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+            <span>Otras</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pendientes" className="mt-6">
+        <TabsContent value="pendientes" className="mt-4">
           <ExperienceModeration
             experiences={pendingList as ExperienceRow[]}
             showActions
@@ -136,14 +133,14 @@ export default async function AdminExperiencesPage() {
           />
         </TabsContent>
 
-        <TabsContent value="activas" className="mt-6">
+        <TabsContent value="activas" className="mt-4">
           <ExperienceModeration
             experiences={activeList as ExperienceRow[]}
             emptyMessage="No hay experiencias activas todavia."
           />
         </TabsContent>
 
-        <TabsContent value="otras" className="mt-6">
+        <TabsContent value="otras" className="mt-4">
           <ExperienceModeration
             experiences={rejectedList as ExperienceRow[]}
             emptyMessage="No hay experiencias rechazadas."

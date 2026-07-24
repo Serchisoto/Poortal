@@ -17,12 +17,10 @@ export const metadata: Metadata = {
 
 export default function AdminSettingsPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Configuracion de la Plataforma
-        </h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-xl font-bold tracking-tight">Configuracion</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Administra las configuraciones generales de POORTAL
         </p>
       </div>

@@ -129,24 +129,24 @@ function ProviderCard({
         )}
 
         {showActions === 'approve' && (
-          <div className="flex gap-2">
+          <div className="space-y-2">
             <form action={approveAction}>
               <input type="hidden" name="provider_id" value={provider.id} />
-              <Button size="sm" disabled={isApproving}>
+              <Button size="sm" className="w-full" disabled={isApproving}>
                 <CheckCircle2 className="mr-1 h-4 w-4" />
-                {isApproving ? 'Aprobando...' : 'Aprobar'}
+                {isApproving ? 'Aprobando...' : 'Aprobar proveedor'}
               </Button>
             </form>
-            <form action={rejectAction} className="flex gap-2">
+            <form action={rejectAction} className="flex flex-col gap-2">
               <input type="hidden" name="provider_id" value={provider.id} />
               <Input
                 name="rejection_reason"
                 placeholder="Motivo de rechazo..."
-                className="w-56"
+                className="w-full"
               />
-              <Button variant="destructive" size="sm" disabled={isRejecting}>
+              <Button variant="destructive" size="sm" className="w-full" disabled={isRejecting}>
                 <XCircle className="mr-1 h-4 w-4" />
-                {isRejecting ? 'Rechazando...' : 'Rechazar'}
+                {isRejecting ? 'Rechazando...' : 'Rechazar proveedor'}
               </Button>
             </form>
           </div>

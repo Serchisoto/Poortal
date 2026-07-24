@@ -1,13 +1,6 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { UsersClient } from '@/components/admin/users-client'
 import prisma from '@/lib/prisma'
@@ -30,33 +23,23 @@ export default async function AdminUsersPage() {
   )
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Gestion de Usuarios</h1>
-        <p className="mt-1 text-muted-foreground">
-          Administra roles y visualiza todos los usuarios registrados en la plataforma.
+        <h1 className="text-xl font-bold tracking-tight">Usuarios</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          Administra roles y visualiza todos los usuarios registrados.
         </p>
       </div>
 
       {/* Stats */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap gap-2">
         <Badge variant="outline">Total: {users.length}</Badge>
         <Badge variant="secondary">Turistas: {countByRole.tourist ?? 0}</Badge>
         <Badge variant="default">Proveedores: {countByRole.provider ?? 0}</Badge>
         <Badge variant="destructive">Admins: {countByRole.admin ?? 0}</Badge>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Listado de usuarios</CardTitle>
-          <CardDescription>
-            Cambia el rol de cualquier usuario usando el selector en la columna Rol.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <UsersClient users={users as Parameters<typeof UsersClient>[0]['users']} />
-        </CardContent>
-      </Card>
+      <UsersClient users={users as Parameters<typeof UsersClient>[0]['users']} />
     </div>
   )
 }

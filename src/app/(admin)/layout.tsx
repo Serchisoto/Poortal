@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
-import { Header } from '@/components/layout/header'
+import { AdminHeader } from '@/components/layout/admin-header'
 import { AdminSidebar } from '@/components/layout/admin-sidebar'
 import { AdminBottomNav } from '@/components/layout/admin-bottom-nav'
 
@@ -28,7 +28,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <AdminHeader />
       <div className="flex flex-1">
         <AdminSidebar />
         <main className="flex-1 p-4 pb-24 lg:p-8 lg:pb-8">
