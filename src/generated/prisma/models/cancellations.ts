@@ -260,7 +260,7 @@ export type CancellationsGroupByOutputType = {
   _max: CancellationsMaxAggregateOutputType | null
 }
 
-type GetCancellationsGroupByPayload<T extends cancellationsGroupByArgs> = Prisma.PrismaPromise<
+export type GetCancellationsGroupByPayload<T extends cancellationsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CancellationsGroupByOutputType, T['by']> &
       {
@@ -1812,6 +1812,11 @@ export type cancellationsFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` cancellations.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of cancellations.
+   */
   distinct?: Prisma.CancellationsScalarFieldEnum | Prisma.CancellationsScalarFieldEnum[]
 }
 

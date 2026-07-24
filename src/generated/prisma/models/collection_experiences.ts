@@ -192,7 +192,7 @@ export type Collection_experiencesGroupByOutputType = {
   _max: Collection_experiencesMaxAggregateOutputType | null
 }
 
-type GetCollection_experiencesGroupByPayload<T extends collection_experiencesGroupByArgs> = Prisma.PrismaPromise<
+export type GetCollection_experiencesGroupByPayload<T extends collection_experiencesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Collection_experiencesGroupByOutputType, T['by']> &
       {
@@ -1292,6 +1292,11 @@ export type collection_experiencesFindManyArgs<ExtArgs extends runtime.Types.Ext
    * Skip the first `n` collection_experiences.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of collection_experiences.
+   */
   distinct?: Prisma.Collection_experiencesScalarFieldEnum | Prisma.Collection_experiencesScalarFieldEnum[]
 }
 

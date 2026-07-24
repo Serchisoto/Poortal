@@ -192,7 +192,7 @@ export type Destination_recommendationsGroupByOutputType = {
   _max: Destination_recommendationsMaxAggregateOutputType | null
 }
 
-type GetDestination_recommendationsGroupByPayload<T extends destination_recommendationsGroupByArgs> = Prisma.PrismaPromise<
+export type GetDestination_recommendationsGroupByPayload<T extends destination_recommendationsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Destination_recommendationsGroupByOutputType, T['by']> &
       {
@@ -1292,6 +1292,11 @@ export type destination_recommendationsFindManyArgs<ExtArgs extends runtime.Type
    * Skip the first `n` destination_recommendations.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of destination_recommendations.
+   */
   distinct?: Prisma.Destination_recommendationsScalarFieldEnum | Prisma.Destination_recommendationsScalarFieldEnum[]
 }
 
