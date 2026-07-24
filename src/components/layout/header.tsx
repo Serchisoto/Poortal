@@ -105,9 +105,10 @@ export function Header() {
             </button>
           </div>
 
-          {/* Center: wordmark */}
+          {/* Center: logo */}
           <Link href={activeSlug ? ROUTES.destination(activeSlug) : ROUTES.home} className="absolute left-1/2 -translate-x-1/2">
-            <span className="text-primary font-bold text-lg tracking-widest select-none">POORTAL</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/poortal-logo.png" alt="Poortal" className="h-8 w-auto object-contain select-none" />
           </Link>
 
           {/* Right: cart + auth */}

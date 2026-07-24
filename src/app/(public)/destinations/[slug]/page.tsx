@@ -63,10 +63,10 @@ export default async function DestinationPage({
         {/* Search */}
         <div className="px-4 md:px-0 -mt-5 mb-6 relative z-10">
           <Link href={ROUTES.explore} className="block relative">
-            <div className="w-full bg-white rounded-2xl border border-border shadow-md py-3.5 pl-12 pr-4 flex items-center text-muted-foreground/60">
-              <span className="text-sm font-semibold tracking-widest uppercase">Ask anything</span>
+            <div className="w-full bg-background rounded-2xl border border-primary/20 shadow-lg py-3.5 pl-12 pr-4 flex items-center text-muted-foreground/60">
+              <span className="text-sm font-semibold tracking-widest uppercase text-muted-foreground/50">Just Ask...</span>
             </div>
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/50" />
           </Link>
         </div>
 

@@ -132,18 +132,19 @@ function RegisterForm() {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Brand header */}
-      <div className="bg-primary px-6 pb-8 pt-12 text-primary-foreground">
+      <div className="bg-background px-6 pb-8 pt-12 border-b border-border/50">
         <Link href="/" className="mb-6 block">
-          <span className="text-2xl font-black tracking-tight">POORTAL</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/poortal-logo.png" alt="Poortal" className="h-14 w-auto object-contain" />
         </Link>
-        <h1 className="text-2xl font-bold leading-tight">Crea tu cuenta</h1>
-        <p className="mt-1 text-sm text-primary-foreground/70">
+        <h1 className="text-2xl font-bold leading-tight text-foreground">Crea tu cuenta</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Reserva experiencias increibles en Mexico
         </p>
       </div>
 
       {/* Form card */}
-      <div className="-mt-4 flex-1 rounded-t-3xl bg-background px-6 pb-10 pt-7 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+      <div className="flex-1 bg-background px-6 pb-10 pt-7">
         {globalError && (
           <div className="mb-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
             {globalError}

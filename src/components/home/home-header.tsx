@@ -35,10 +35,13 @@ export function HomeHeader() {
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground mt-0.5" strokeWidth={2.5} />
       </Link>
 
-      {/* Center: wordmark */}
-      <span className="absolute left-1/2 -translate-x-1/2 text-primary font-bold text-lg tracking-widest pointer-events-none select-none">
-        POORTAL
-      </span>
+      {/* Center: logo */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/poortal-logo.png"
+        alt="Poortal"
+        className="absolute left-1/2 -translate-x-1/2 h-7 w-auto object-contain pointer-events-none select-none"
+      />
 
       {/* Right: cart + avatar */}
       <div className="flex items-center gap-2">
