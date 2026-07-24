@@ -40,7 +40,7 @@ export function HomeHeader() {
       <img
         src="/poortal-logo.png"
         alt="Poortal"
-        className="absolute left-1/2 -translate-x-1/2 h-7 w-auto object-contain pointer-events-none select-none"
+        className="absolute left-1/2 -translate-x-1/2 h-10 w-auto object-contain pointer-events-none select-none"
       />
 
       {/* Right: cart + avatar */}

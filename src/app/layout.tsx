@@ -61,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-background" suppressHydrationWarning>
       <head>
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-512.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/poortal-icon.png" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
