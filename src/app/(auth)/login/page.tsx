@@ -48,23 +48,35 @@ function LoginForm() {
       return
     }
 
-    // Determine destination: poll /api/auth/get-session until the session cookie
-    // is visible server-side (confirms the cookie has landed), then navigate.
-    let destination = redirectTo || '/'
-    if (!redirectTo) {
+    // The sign-in response sets the session cookie via Set-Cookie. We must wait
+    // until the browser has applied that cookie before navigating, otherwise the
+    // first request to /admin/dashboard goes out without it and the middleware
+    // redirects back to login. Poll server-side get-session (which reads from
+    // the incoming request cookies) until it returns a valid session.
+    let role: string | undefined
+    for (let i = 0; i < 15; i++) {
+      await new Promise(r => setTimeout(r, 300))
       try {
-        // Poll session directly — role lives in user.role (Better Auth)
         const sessionRes = await fetch('/api/auth/get-session', { credentials: 'include' })
         if (sessionRes.ok) {
           const data = await sessionRes.json()
-          const role = data?.user?.role
-          if (role === 'admin') destination = '/admin/dashboard'
-          else if (role === 'provider') destination = '/provider/dashboard'
+          if (data?.session?.id) {
+            role = data?.user?.role
+            break
+          }
         }
-      } catch { /* fall through to default */ }
+      } catch { /* keep polling */ }
     }
 
-    // The session fetch above already confirmed the cookie landed — navigate.
+    let destination = redirectTo || '/'
+    if (!redirectTo) {
+      if (role === 'admin') destination = '/admin/dashboard'
+      else if (role === 'provider') destination = '/provider/dashboard'
+    }
+
+    // One extra tick so the browser cookie jar is fully committed before the
+    // full-page navigation triggers the server-side middleware check.
+    await new Promise(r => setTimeout(r, 100))
     window.location.href = destination
   }
 
