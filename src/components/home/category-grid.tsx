@@ -77,20 +77,20 @@ export function CategoryGrid({ enabledSlugs }: CategoryGridProps) {
                             href={href}
                             className={`
                                 ${category.span}
-                                group flex items-center justify-center gap-2.5
+                                group flex flex-col items-center justify-center gap-2
                                 bg-card rounded-2xl
                                 border border-border/60
-                                py-4 px-3
+                                py-4 px-2
                                 transition-all duration-150
                                 hover:border-primary/40 hover:bg-primary/5
-                                active:scale-[0.97] active:bg-primary/8
+                                active:scale-[0.97]
                             `}
                         >
-                            {/* Icon bubble */}
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
-                                <Icon className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                            {/* Icon bubble — larger, prominent */}
+                            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/18">
+                                <Icon className="h-5 w-5 text-primary" strokeWidth={1.6} />
                             </span>
-                            <span className="text-[0.78rem] font-semibold text-foreground/75 capitalize leading-none tracking-wide">
+                            <span className="text-[0.65rem] font-semibold text-foreground/65 capitalize leading-none tracking-wide text-center">
                                 {category.label}
                             </span>
                         </Link>
