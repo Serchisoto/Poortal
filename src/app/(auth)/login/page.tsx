@@ -48,18 +48,31 @@ function LoginForm() {
       return
     }
 
-    // Full page navigation commits the session cookie before the server renders
-    // the next route, avoiding the "session not found" redirect loop.
-    const role = (result?.data?.user as { role?: string } | undefined)?.role
-
-    if (redirectTo) {
-      window.location.href = redirectTo
-      return
+    // Determine destination: poll /api/auth/get-session until the session cookie
+    // is visible server-side (confirms the cookie has landed), then navigate.
+    let destination = redirectTo || '/'
+    if (!redirectTo) {
+      try {
+        const profileRes = await fetch('/api/profile', { credentials: 'include' })
+        if (profileRes.ok) {
+          const profile = await profileRes.json()
+          if (profile?.role === 'admin') destination = '/admin/dashboard'
+          else if (profile?.role === 'provider') destination = '/provider/dashboard'
+        }
+      } catch { /* fall through to default */ }
     }
 
-    if (role === 'admin') window.location.href = '/admin/dashboard'
-    else if (role === 'provider') window.location.href = '/provider/dashboard'
-    else window.location.href = '/'
+    // Poll until the server confirms the session exists (max 3s), then navigate.
+    for (let i = 0; i < 6; i++) {
+      await new Promise(r => setTimeout(r, 250))
+      try {
+        const s = await fetch('/api/auth/get-session', { credentials: 'include' })
+        const data = await s.json()
+        if (data?.session) break
+      } catch { /* keep polling */ }
+    }
+
+    window.location.href = destination
   }
 
   return (

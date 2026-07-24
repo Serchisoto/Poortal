@@ -3,18 +3,6 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from './prisma'
 import { sendPasswordResetEmail, sendVerificationEmail } from './email'
 
-const trustedOrigins = [
-  process.env.BETTER_AUTH_URL,
-  process.env.NEXT_PUBLIC_APP_URL,
-  process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : undefined,
-  process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : undefined,
-  process.env.V0_RUNTIME_URL,
-].filter(Boolean) as string[]
-
 const appURL =
   process.env.BETTER_AUTH_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -23,6 +11,23 @@ const appURL =
       ? `https://${process.env.VERCEL_URL}`
       : process.env.V0_RUNTIME_URL) ??
   'http://localhost:3000'
+
+const trustedOrigins = [
+  appURL,
+  process.env.NEXT_PUBLIC_APP_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : undefined,
+  process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : undefined,
+  process.env.V0_RUNTIME_URL,
+  'http://localhost:3000',
+  // Wildcard patterns for v0 and Vercel preview domains
+  '*.vercel.run',
+  '*.vusercontent.net',
+  '*.vercel.app',
+].filter(Boolean) as string[]
 
 export const auth = betterAuth({
   baseURL: appURL,
@@ -42,14 +47,6 @@ export const auth = betterAuth({
     },
     autoSignInAfterVerification: true,
   },
-  ...(process.env.NODE_ENV === 'development' && {
-    advanced: {
-      defaultCookieAttributes: {
-        sameSite: 'none',
-        secure: true,
-      },
-    },
-  }),
   user: {
     additionalFields: {
       role: {
